@@ -1,0 +1,20 @@
+{
+  "name": "uni-assistant",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "AI University Student Assistant — Telegram bot gateway + deterministic academic-planning engine + portal/moodle data extraction",
+  "engines": {
+    "node": ">=24"
+  },
+  "scripts": {
+    "start": "node src/app.ts",
+    "typecheck": "tsc --noEmit",
+    "test": "node --test \"src/**/*.test.ts\"",
+    "check": "npm run typecheck && npm test"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "typescript": "^5.8.0"
+  }
+}
