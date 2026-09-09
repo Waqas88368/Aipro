@@ -3,4 +3,3 @@ node_modules/
 .hoplite/artifacts/
 *.log
 .DS_Store
-linux-store/dist/
