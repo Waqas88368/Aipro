@@ -33,6 +33,30 @@
     "button": "Join",
     "success": "You're in. Welcome to the flock."
   },
+  "password": {
+    "title": "Something's being stitched.",
+    "body": "The new LINUX drop is almost ready. Leave your email and you'll be first through the door.",
+    "enter": "Enter with password",
+    "password": "Password",
+    "submit": "Enter",
+    "powered_html": "This shop will be powered by Shopify"
+  },
+  "gift_card": {
+    "title": "Your gift card",
+    "subtitle": "Here's your LINUX gift card — spend it on anything in the store.",
+    "code": "Gift card code",
+    "balance": "Balance",
+    "initial": "Original value",
+    "expires": "Expires {{ date }}",
+    "expired": "This gift card has expired",
+    "disabled": "This gift card is no longer active",
+    "copy": "Copy code",
+    "copied": "Copied",
+    "shop": "Start shopping",
+    "print": "Print",
+    "qr": "Scan at checkout or show this screen in store",
+    "add_to_wallet": "Add to Apple Wallet"
+  },
   "search": {
     "title": "Search",
     "placeholder": "Search hoodies, tees, caps…",

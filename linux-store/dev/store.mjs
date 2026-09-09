@@ -168,6 +168,9 @@ export function buildStore(dataDir) {
       if (p === '/account/reset' || p.startsWith('/account/reset/')) return set('customers/reset_password', { page_title: 'Reset password' });
       if (p === '/account') return customer ? set('customers/account', { customer, page_title: 'Account' }) : set('customers/login', { page_title: 'Sign in' });
       if (p === '/404') return set('404');
+      // Dev-only previews of the standalone templates
+      if (p === '/password') return set('password', { page_title: 'Coming soon' });
+      if (p === '/gift_cards/preview') return set('gift_card', { page_title: 'Gift card', gift_card: { code: 'LNX4PENG9UIN2026', initial_value: 100000, balance: 64900, enabled: true, expired: false, expires_on: '2027-12-31', qr_identifier: 'shopify-giftcard-v1-LNX4PENG9UIN2026', pass_url: null, currency: 'EGP', product: null, properties: {} } });
       return null;
     },
 
