@@ -27,14 +27,15 @@
   const submitErr = root.querySelector('[data-cz-submit-error]');
   const total = root.querySelector('[data-cz-total]');
 
-  const state = { x: 50, y: 42, s: 45, side: 'front', shape: root.querySelector('[data-cz-garment-opt].is-active')?.dataset.czGarmentOpt || 'tee', fee: 0, hasDesign: false, price: meta.price || 0 };
+  const activeOpt = root.querySelector('[data-cz-garment-opt].is-active');
+  const state = { x: 50, y: 42, s: 45, side: 'front', shape: activeOpt?.dataset.czGarmentOpt || 'tee', label: activeOpt?.dataset.label || '', fee: 0, hasDesign: false, price: meta.price || 0 };
 
   function paint() {
     design.style.setProperty('--dx', state.x + '%');
     design.style.setProperty('--dy', state.y + '%');
     design.style.setProperty('--ds', state.s);
     posInput.value = `x:${Math.round(state.x)},y:${Math.round(state.y)},scale:${state.s},side:${state.side}`;
-    garmentProp.value = state.shape;
+    garmentProp.value = state.label || state.shape;
     root.querySelectorAll('[data-cz-shape]').forEach((g) => { g.style.display = g.dataset.czShape === state.shape ? '' : 'none'; });
     if (total) total.textContent = L.money(state.price + state.fee);
   }
@@ -101,8 +102,7 @@
   /* Garment shape */
   root.querySelectorAll('[data-cz-garment-opt]').forEach((btn) => btn.addEventListener('click', () => {
     root.querySelectorAll('[data-cz-garment-opt]').forEach((b) => b.classList.toggle('is-active', b === btn));
-    state.shape = btn.dataset.czGarmentOpt; state.fee = Number(btn.dataset.fee || 0);
-    garmentProp.value = btn.dataset.label || state.shape;
+    state.shape = btn.dataset.czGarmentOpt; state.fee = Number(btn.dataset.fee || 0); state.label = btn.dataset.label || '';
     if (state.shape === 'cap') { state.y = Math.min(state.y, 40); state.s = Math.min(state.s, 30); scale.value = state.s; }
     paint();
   }));
