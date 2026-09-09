@@ -1,0 +1,56 @@
+{%- comment -%}
+  Single icon sprite. Usage: {% render 'icon', name: 'cart', px: 22 %}
+  Stroke icons at 1.8px so they sit with the 700-weight type.
+{%- endcomment -%}
+{%- assign s = px | default: 22 -%}
+<svg class="icon icon--{{ name }}{% if class %} {{ class }}{% endif %}" width="{{ s }}" height="{{ s }}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+{%- case name -%}
+{%- when 'menu' -%}<path d="M4 7h16M4 12h16M4 17h10"/>
+{%- when 'close' -%}<path d="M6 6l12 12M18 6L6 18"/>
+{%- when 'search' -%}<circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/>
+{%- when 'cart' -%}<path d="M6 8h12l1 12H5L6 8Z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/>
+{%- when 'bag' -%}<path d="M5 9h14l-.8 10.2A2 2 0 0 1 16.2 21H7.8a2 2 0 0 1-2-1.8L5 9Z"/><path d="M9 9V7a3 3 0 0 1 6 0v2"/>
+{%- when 'account' -%}<circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/>
+{%- when 'heart' -%}<path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10Z"/>
+{%- when 'heart-fill' -%}<path fill="currentColor" stroke="none" d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10Z"/>
+{%- when 'arrow-right' -%}<path d="M5 12h14M13 6l6 6-6 6"/>
+{%- when 'arrow-left' -%}<path d="M19 12H5M11 6l-6 6 6 6"/>
+{%- when 'arrow-up-right' -%}<path d="M7 17 17 7M9 7h8v8"/>
+{%- when 'chevron-down' -%}<path d="m6 9 6 6 6-6"/>
+{%- when 'chevron-right' -%}<path d="m9 6 6 6-6 6"/>
+{%- when 'chevron-left' -%}<path d="m15 6-6 6 6 6"/>
+{%- when 'plus' -%}<path d="M12 5v14M5 12h14"/>
+{%- when 'minus' -%}<path d="M5 12h14"/>
+{%- when 'check' -%}<path d="m5 12 5 5L20 7"/>
+{%- when 'star' -%}<path fill="currentColor" stroke="none" d="m12 2.5 2.9 6.2 6.7.8-5 4.6 1.3 6.7L12 17.5l-5.9 3.3 1.3-6.7-5-4.6 6.7-.8L12 2.5Z"/>
+{%- when 'truck' -%}<path d="M3 7h11v9H3zM14 10h4l3 3v3h-7z"/><circle cx="7" cy="18" r="2"/><circle cx="17" cy="18" r="2"/>
+{%- when 'return' -%}<path d="M4 9h11a4 4 0 0 1 0 8H9"/><path d="m8 5-4 4 4 4"/>
+{%- when 'shield' -%><path d="M12 3 4 6v6c0 5 3.4 8 8 9 4.6-1 8-4 8-9V6l-8-3Z"/><path d="m9 12 2 2 4-4"/>
+{%- when 'needle' -%}<path d="M4 20 15 9"/><path d="m13 5 6 6"/><circle cx="17.5" cy="6.5" r="2.5"/><path d="M4 20h3"/>
+{%- when 'ruler' -%}<path d="m3 16 13-13 5 5L8 21l-5-5Z"/><path d="m9 10 1.5 1.5M12 7l1.5 1.5M6 13l1.5 1.5"/>
+{%- when 'share' -%}<circle cx="18" cy="5" r="2.5"/><circle cx="6" cy="12" r="2.5"/><circle cx="18" cy="19" r="2.5"/><path d="m8.2 10.8 7.6-4.6M8.2 13.2l7.6 4.6"/>
+{%- when 'zoom' -%}<circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5M8 11h6M11 8v6"/>
+{%- when 'play' -%}<path fill="currentColor" stroke="none" d="M8 5v14l11-7z"/>
+{%- when 'pause' -%}<path fill="currentColor" stroke="none" d="M7 5h3v14H7zM14 5h3v14h-3z"/>
+{%- when 'instagram' -%}<rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r=".8" fill="currentColor"/>
+{%- when 'tiktok' -%}<path d="M15 3v9.5a3.5 3.5 0 1 1-3.5-3.5"/><path d="M15 3c.5 2.5 2.2 4 4.5 4.3"/>
+{%- when 'facebook' -%}<path d="M14 8h3V4h-3a4 4 0 0 0-4 4v3H7v4h3v6h4v-6h3l1-4h-4V8Z"/>
+{%- when 'whatsapp' -%}<path d="M12 3a9 9 0 0 0-7.7 13.6L3 21l4.5-1.2A9 9 0 1 0 12 3Z"/><path d="M9 8.5c0 3.5 3 6.5 6.5 6.5l1-1.5-2-1-1 1a5 5 0 0 1-3-3l1-1-1-2-1.5 1Z"/>
+{%- when 'mail' -%}<rect x="3" y="5" width="18" height="14" rx="3"/><path d="m3 8 9 6 9-6"/>
+{%- when 'phone' -%}<path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2Z"/>
+{%- when 'pin' -%}<path d="M12 21s-6-5.3-6-11a6 6 0 0 1 12 0c0 5.7-6 11-6 11Z"/><circle cx="12" cy="10" r="2"/>
+{%- when 'filter' -%}<path d="M4 6h16M7 12h10M10 18h4"/>
+{%- when 'grid' -%}<rect x="4" y="4" width="7" height="7" rx="2"/><rect x="13" y="4" width="7" height="7" rx="2"/><rect x="4" y="13" width="7" height="7" rx="2"/><rect x="13" y="13" width="7" height="7" rx="2"/>
+{%- when 'upload' -%}<path d="M12 16V4m0 0-4 4m4-4 4 4"/><path d="M4 16v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/>
+{%- when 'rotate' -%}<path d="M20 12a8 8 0 1 1-2.3-5.7"/><path d="M20 4v4h-4"/>
+{%- when 'trash' -%}<path d="M5 7h14M9 7V5h6v2M7 7l1 13h8l1-13"/>
+{%- when 'sparkle' -%}<path d="m12 3 1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8L12 3Z"/>
+{%- when 'globe' -%}<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/>
+{%- when 'lock' -%}<rect x="5" y="11" width="14" height="10" rx="3"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/>
+{%- when 'tag' -%}<path d="M3 12V4h8l9 9-8 8-9-9Z"/><circle cx="7.5" cy="8.5" r="1.2" fill="currentColor"/>
+{%- when 'package' -%}<path d="m12 3 8 4v10l-8 4-8-4V7l8-4Z"/><path d="m4 7 8 4 8-4M12 11v10"/>
+{%- when 'eye' -%}<path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/>
+{%- when 'external' -%}<path d="M14 4h6v6M20 4l-9 9"/><path d="M19 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1h5"/>
+{%- else -%}<circle cx="12" cy="12" r="8"/>
+{%- endcase -%}
+</svg>

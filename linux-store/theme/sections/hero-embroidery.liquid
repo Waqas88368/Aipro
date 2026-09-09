@@ -1,0 +1,100 @@
+{%- comment -%}
+  Hero — the LINUX wordmark being embroidered, shot macro, looping under a
+  Liquid Glass pane. The video ships with the theme (1080p + 720p + poster)
+  so the store looks finished on install; the merchant can swap it.
+{%- endcomment -%}
+{%- liquid
+  assign s = section.settings
+  assign poster = 'hero-embroidery-poster.webp' | asset_url
+  if s.poster != blank
+    assign poster = s.poster | image_url: width: 1920
+  endif
+-%}
+<section class="hero hero--{{ s.align | default: 'start' }}" id="hero-{{ section.id }}" style="--hero-h: {{ s.height | default: 100 }}svh; --hero-dim: {{ s.overlay | default: 40 | divided_by: 100.0 }};" data-hero>
+  <div class="hero__media" aria-hidden="true" data-hero-media>
+    {%- if s.video != blank -%}
+      {{ s.video | video_tag: autoplay: true, loop: true, muted: true, controls: false, playsinline: true, preload: 'metadata', class: 'hero__video', poster: poster }}
+    {%- else -%}
+      <video class="hero__video" autoplay muted loop playsinline preload="metadata" poster="{{ poster }}" data-hero-video>
+        <source src="{{ 'hero-embroidery-1080.mp4' | asset_url }}" type="video/mp4" media="(min-width: 900px)">
+        <source src="{{ 'hero-embroidery-720.mp4' | asset_url }}" type="video/mp4">
+      </video>
+    {%- endif -%}
+    <div class="hero__scrim"></div>
+  </div>
+
+  <div class="hero__inner wrap">
+    <div class="hero__pane glass" data-specular data-reveal>
+      {%- if s.eyebrow != blank -%}
+        <p class="eyebrow hero__eyebrow">{{ s.eyebrow | escape }}</p>
+      {%- endif -%}
+      <h1 class="hero__title display">
+        {%- if s.heading != blank -%}{{ s.heading }}{%- else -%}{% render 'brand-logo', class: 'hero__mark', height: 72 %}{%- endif -%}
+      </h1>
+      {%- if s.subheading != blank -%}<p class="hero__sub lede">{{ s.subheading }}</p>{%- endif -%}
+      <div class="hero__cta">
+        {%- if s.cta_label != blank -%}
+          <a href="{{ s.cta_url | default: routes.all_products_collection_url }}" class="btn btn--primary btn--lg" data-magnetic>{{ s.cta_label | escape }}{% render 'icon', name: 'arrow-right' %}</a>
+        {%- endif -%}
+        {%- if s.cta2_label != blank -%}
+          <a href="{{ s.cta2_url | default: routes.collections_url }}" class="btn btn--glass btn--lg" data-magnetic>{{ s.cta2_label | escape }}</a>
+        {%- endif -%}
+      </div>
+      {%- if s.show_trust -%}
+        <ul class="hero__trust" role="list">
+          <li>{% render 'icon', name: 'truck', px: 18 %}<span>{{ s.trust_1 | escape }}</span></li>
+          <li>{% render 'icon', name: 'return', px: 18 %}<span>{{ s.trust_2 | escape }}</span></li>
+          <li>{% render 'icon', name: 'needle', px: 18 %}<span>{{ s.trust_3 | escape }}</span></li>
+        </ul>
+      {%- endif -%}
+    </div>
+
+    {%- if s.show_mascot -%}
+      <div class="hero__side" aria-hidden="true">
+        <div class="hero__mascot glass glass--clear" data-float>
+          {% render 'mascot', name: s.mascot, width: 250, loading: 'eager' %}
+        </div>
+        {%- if s.chip_1 != blank -%}<span class="chip hero__chip hero__chip--a" data-float>{{ s.chip_1 | escape }}</span>{%- endif -%}
+        {%- if s.chip_2 != blank -%}<span class="chip chip--accent hero__chip hero__chip--b" data-float>{{ s.chip_2 | escape }}</span>{%- endif -%}
+      </div>
+    {%- endif -%}
+  </div>
+
+  <div class="hero__controls">
+    <a href="#after-hero" class="hero__scroll glass glass--clear glass--pill" aria-label="{{ 'sections.hero.scroll' | t }}"><span class="hero__scroll-dot"></span></a>
+    <button class="icon-btn glass glass--clear hero__toggle" type="button" data-hero-toggle aria-label="{{ 'sections.hero.pause' | t }}" aria-pressed="false">
+      <span class="hero__toggle-pause">{% render 'icon', name: 'pause', px: 16 %}</span>
+      <span class="hero__toggle-play">{% render 'icon', name: 'play', px: 16 %}</span>
+    </button>
+  </div>
+</section>
+<div id="after-hero"></div>
+
+{% schema %}
+{
+  "name": "Hero — Embroidery video",
+  "settings": [
+    { "type": "video", "id": "video", "label": "Video (defaults to the embroidery loop shipped with the theme)" },
+    { "type": "image_picker", "id": "poster", "label": "Poster image" },
+    { "type": "range", "id": "height", "label": "Height", "min": 70, "max": 100, "step": 5, "unit": "vh", "default": 100 },
+    { "type": "range", "id": "overlay", "label": "Darken video", "min": 0, "max": 80, "step": 5, "unit": "%", "default": 40 },
+    { "type": "select", "id": "align", "label": "Pane position", "options": [ { "value": "start", "label": "Start" }, { "value": "center", "label": "Center" } ], "default": "start" },
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "LINUX · Cairo · FW26" },
+    { "type": "text", "id": "heading", "label": "Heading (leave blank to show the wordmark)", "default": "Stitched in Cairo. Worn everywhere." },
+    { "type": "textarea", "id": "subheading", "label": "Subheading", "default": "Heavyweight streetwear with embroidered details — made to move with you." },
+    { "type": "text", "id": "cta_label", "label": "Primary button", "default": "Shop the drop" },
+    { "type": "url", "id": "cta_url", "label": "Primary link" },
+    { "type": "text", "id": "cta2_label", "label": "Secondary button", "default": "Customize yours" },
+    { "type": "url", "id": "cta2_url", "label": "Secondary link" },
+    { "type": "checkbox", "id": "show_trust", "label": "Show trust row", "default": true },
+    { "type": "text", "id": "trust_1", "label": "Trust 1", "default": "Free shipping over LE 2,000" },
+    { "type": "text", "id": "trust_2", "label": "Trust 2", "default": "14-day easy exchange" },
+    { "type": "text", "id": "trust_3", "label": "Trust 3", "default": "Embroidered, not printed" },
+    { "type": "checkbox", "id": "show_mascot", "label": "Show floating penguin", "default": true },
+    { "type": "select", "id": "mascot", "label": "Penguin", "options": [ { "value": "skate-spray", "label": "Skate + spray" }, { "value": "skate", "label": "Skate" }, { "value": "classic", "label": "Classic" }, { "value": "hoodie-sit", "label": "Hoodie" }, { "value": "boombox", "label": "Boombox" }, { "value": "astro", "label": "Astronaut" } ], "default": "skate-spray" },
+    { "type": "text", "id": "chip_1", "label": "Chip 1", "default": "NEW DROP" },
+    { "type": "text", "id": "chip_2", "label": "Chip 2", "default": "CAIRO · 2026" }
+  ],
+  "presets": [ { "name": "Hero — Embroidery video" } ]
+}
+{% endschema %}

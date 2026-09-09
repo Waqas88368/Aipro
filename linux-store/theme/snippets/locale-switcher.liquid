@@ -1,0 +1,12 @@
+{%- if localization.available_languages.size > 1 -%}
+  {%- form 'localization', id: 'localization-header', class: 'locale-switcher' -%}
+    {%- for lang in localization.available_languages -%}
+      {%- unless lang.iso_code == localization.language.iso_code -%}
+        <button class="locale-switcher__btn" type="submit" name="language_code" value="{{ lang.iso_code }}" lang="{{ lang.iso_code }}" aria-label="{{ lang.endonym_name }}">
+          {%- if lang.iso_code == 'ar' -%}ع{%- else -%}EN{%- endif -%}
+        </button>
+      {%- endunless -%}
+    {%- endfor -%}
+    <input type="hidden" name="return_to" value="{{ request.path }}">
+  {%- endform -%}
+{%- endif -%}

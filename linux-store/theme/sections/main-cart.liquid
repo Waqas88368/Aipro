@@ -1,0 +1,18 @@
+<section class="cart-page wrap" id="cart-{{ section.id }}">
+  <header class="cart-page__head" data-reveal>
+    <p class="eyebrow">{{ 'cart.title' | t }}</p>
+    <h1 class="collection__title">{{ 'cart.title' | t }} <span class="badge" style="vertical-align:middle;font-size:14px;height:32px;min-width:32px" data-cart-count>{{ cart.item_count }}</span></h1>
+  </header>
+  <div class="cart-page__grid" data-cart-page data-section-id="{{ section.id }}">
+    <div class="glass cart-page__lines" data-cart-region="body">
+      {% render 'cart-body', cart: cart, context: 'page' %}
+    </div>
+    <aside class="glass cart-page__summary" data-cart-region="foot">
+      {% render 'cart-foot', cart: cart, context: 'page' %}
+      {%- if cart.item_count > 0 -%}<a href="{{ routes.all_products_collection_url }}" class="btn btn--ghost btn--sm btn--block">{{ 'cart.continue' | t }}</a>{%- endif -%}
+    </aside>
+  </div>
+</section>
+{% schema %}
+{ "name": "Cart", "settings": [] }
+{% endschema %}

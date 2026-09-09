@@ -1,0 +1,139 @@
+/* LINUX — Liquid Glass interaction layer
+   specular highlight · magnetic buttons · header morph · hero parallax &
+   pause · scroll reveal · mega menu keyboard support. Respects reduced motion. */
+(function () {
+  'use strict';
+  const doc = document;
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const fine = matchMedia('(pointer: fine)').matches;
+
+  /* Specular sheen follows the pointer on [data-specular] glass */
+  if (fine && !reduce) {
+    doc.addEventListener('pointermove', (e) => {
+      const el = e.target.closest && e.target.closest('[data-specular]');
+      if (!el) return;
+      const r = el.getBoundingClientRect();
+      el.style.setProperty('--mx', ((e.clientX - r.left) / r.width * 100).toFixed(1) + '%');
+      el.style.setProperty('--my', ((e.clientY - r.top) / r.height * 100).toFixed(1) + '%');
+    }, { passive: true });
+  }
+
+  /* Magnetic pull on primary CTAs */
+  if (fine && !reduce) {
+    doc.addEventListener('pointermove', (e) => {
+      const btn = e.target.closest && e.target.closest('[data-magnetic]');
+      if (!btn) return;
+      const r = btn.getBoundingClientRect();
+      const x = (e.clientX - (r.left + r.width / 2)) * 0.22;
+      const y = (e.clientY - (r.top + r.height / 2)) * 0.22;
+      btn.style.transform = `translate(${x.toFixed(1)}px, ${y.toFixed(1)}px)`;
+    }, { passive: true });
+    doc.addEventListener('pointerout', (e) => {
+      const btn = e.target.closest && e.target.closest('[data-magnetic]');
+      if (btn && !btn.contains(e.relatedTarget)) btn.style.transform = '';
+    });
+  }
+
+  /* Header: compact capsule on scroll, hide on scroll-down past the fold */
+  const header = doc.querySelector('[data-header]');
+  const heroMedia = doc.querySelector('[data-hero-media]');
+  let lastY = window.scrollY, ticking = false;
+  function onScroll() {
+    const y = window.scrollY;
+    if (header) {
+      header.classList.toggle('is-compact', y > 48);
+      header.classList.toggle('is-hidden', y > lastY && y > 480 && !doc.body.classList.contains('drawer-open'));
+    }
+    if (heroMedia && !reduce && y < window.innerHeight) heroMedia.style.transform = `translateY(${(y * 0.22).toFixed(1)}px)`;
+    lastY = y; ticking = false;
+  }
+  addEventListener('scroll', () => { if (!ticking) { requestAnimationFrame(onScroll); ticking = true; } }, { passive: true });
+  onScroll();
+
+  /* Hero video pause/play + Save-Data respect */
+  const video = doc.querySelector('[data-hero-video]');
+  const toggle = doc.querySelector('[data-hero-toggle]');
+  if (video) {
+    const saveData = navigator.connection && navigator.connection.saveData;
+    if (saveData || reduce) { video.pause(); video.removeAttribute('autoplay'); if (toggle) toggle.setAttribute('aria-pressed', 'true'); }
+    else { video.play().catch(() => {}); }
+    if (toggle) toggle.addEventListener('click', () => {
+      const paused = video.paused;
+      if (paused) video.play().catch(() => {}); else video.pause();
+      toggle.setAttribute('aria-pressed', String(!paused));
+    });
+    // Free the decoder when the hero is off-screen
+    if ('IntersectionObserver' in window) {
+      new IntersectionObserver((entries) => entries.forEach((en) => {
+        if (toggle && toggle.getAttribute('aria-pressed') === 'true') return;
+        if (en.isIntersecting) video.play().catch(() => {}); else video.pause();
+      }), { threshold: 0.05 }).observe(video);
+    }
+  }
+
+  /* Scroll reveal */
+  const revealables = doc.querySelectorAll('[data-reveal]');
+  if ('IntersectionObserver' in window && !reduce) {
+    const io = new IntersectionObserver((entries) => entries.forEach((en) => { if (en.isIntersecting) { en.target.classList.add('is-in'); io.unobserve(en.target); } }), { rootMargin: '0px 0px -8% 0px', threshold: 0.05 });
+    revealables.forEach((el) => io.observe(el));
+    // Re-observe elements injected later (rails, search results)
+    new MutationObserver((muts) => muts.forEach((m) => m.addedNodes.forEach((n) => {
+      if (n.nodeType !== 1) return;
+      if (n.matches && n.matches('[data-reveal]') && !n.classList.contains('is-in')) io.observe(n);
+      n.querySelectorAll && n.querySelectorAll('[data-reveal]:not(.is-in)').forEach((el) => io.observe(el));
+    }))).observe(doc.body, { childList: true, subtree: true });
+  } else {
+    revealables.forEach((el) => el.classList.add('is-in'));
+  }
+
+  /* Mega menu: keyboard + touch open */
+  doc.querySelectorAll('[data-mega]').forEach((item) => {
+    const link = item.querySelector('.nav-link');
+    link.addEventListener('click', (e) => {
+      if (!fine || matchMedia('(hover: none)').matches) {
+        if (!item.classList.contains('is-open')) { e.preventDefault(); doc.querySelectorAll('[data-mega].is-open').forEach((o) => o !== item && o.classList.remove('is-open')); item.classList.add('is-open'); link.setAttribute('aria-expanded', 'true'); }
+      }
+    });
+    link.addEventListener('keydown', (e) => { if (e.key === 'ArrowDown' || e.key === ' ') { e.preventDefault(); item.classList.add('is-open'); link.setAttribute('aria-expanded', 'true'); const first = item.querySelector('.mega a'); first && first.focus(); } });
+    item.addEventListener('keydown', (e) => { if (e.key === 'Escape') { item.classList.remove('is-open'); link.setAttribute('aria-expanded', 'false'); link.focus(); } });
+    item.addEventListener('focusout', (e) => { if (!item.contains(e.relatedTarget)) { item.classList.remove('is-open'); link.setAttribute('aria-expanded', 'false'); } });
+  });
+  doc.addEventListener('click', (e) => { if (!e.target.closest('[data-mega]')) doc.querySelectorAll('[data-mega].is-open').forEach((o) => { o.classList.remove('is-open'); o.querySelector('.nav-link').setAttribute('aria-expanded', 'false'); }); });
+
+  /* Rails: prev/next buttons */
+  doc.querySelectorAll('[data-rail]').forEach((rail) => {
+    const track = rail.querySelector('.rail__track');
+    const prev = rail.querySelector('[data-rail-prev]');
+    const next = rail.querySelector('[data-rail-next]');
+    if (!track) return;
+    const dir = getComputedStyle(track).direction === 'rtl' ? -1 : 1;
+    const step = () => { const first = track.firstElementChild; return first ? first.getBoundingClientRect().width + 20 : 300; };
+    prev && prev.addEventListener('click', () => track.scrollBy({ left: -step() * dir, behavior: 'smooth' }));
+    next && next.addEventListener('click', () => track.scrollBy({ left: step() * dir, behavior: 'smooth' }));
+    const update = () => {
+      const max = track.scrollWidth - track.clientWidth - 2;
+      const pos = Math.abs(track.scrollLeft);
+      if (prev) prev.disabled = pos <= 2;
+      if (next) next.disabled = pos >= max;
+    };
+    track.addEventListener('scroll', update, { passive: true });
+    addEventListener('resize', update);
+    update();
+  });
+
+  /* Hotspots (shop the look) */
+  doc.addEventListener('click', (e) => {
+    const spot = e.target.closest('[data-hotspot]');
+    const openCards = doc.querySelectorAll('.hotspot__card.is-open');
+    if (!spot) { if (!e.target.closest('.hotspot__card')) openCards.forEach((c) => c.classList.remove('is-open')); return; }
+    const card = spot.nextElementSibling;
+    openCards.forEach((c) => c !== card && c.classList.remove('is-open'));
+    card && card.classList.toggle('is-open');
+  });
+
+  /* Announcement duplicates for seamless marquee are in Liquid; pause on hover */
+  doc.querySelectorAll('.announcement').forEach((a) => {
+    a.addEventListener('pointerenter', () => a.querySelector('.announcement__track').style.animationPlayState = 'paused');
+    a.addEventListener('pointerleave', () => a.querySelector('.announcement__track').style.animationPlayState = '');
+  });
+})();

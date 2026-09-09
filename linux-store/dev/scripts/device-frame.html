@@ -1,0 +1,16 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Device frame</title>
+<style>
+  body { margin: 0; background: #111; display: flex; gap: 24px; padding: 20px; align-items: flex-start; font-family: system-ui; color: #999; }
+  .phone { display: grid; gap: 6px; }
+  iframe { width: 390px; height: 844px; border: 0; border-radius: 44px; background: #000; box-shadow: 0 0 0 10px #222, 0 30px 60px rgba(0,0,0,.6); }
+  small { text-align: center; font-size: 12px; }
+</style>
+<div class="phone"><iframe id="a" src="/"></iframe><small>/</small></div>
+<div class="phone"><iframe id="b" src="/products/hoodie-sada-white"></iframe><small>/products</small></div>
+<div class="phone"><iframe id="c" src="/collections/winter-collection"></iframe><small>/collections</small></div>
+<script>
+  const q = new URLSearchParams(location.search);
+  ['a','b','c'].forEach((id) => { const u = q.get(id); if (u) document.getElementById(id).src = u; });
+</script>

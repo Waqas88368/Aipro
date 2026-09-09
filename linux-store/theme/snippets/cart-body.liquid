@@ -1,0 +1,53 @@
+{%- comment -%} Shared by the cart drawer and cart page. Re-rendered via the Section Rendering API. {%- endcomment -%}
+{%- if settings.free_shipping_threshold > 0 -%}
+  {%- assign threshold = settings.free_shipping_threshold | times: 100 -%}
+  {%- assign remaining = threshold | minus: cart.total_price -%}
+  {%- assign pct = cart.total_price | times: 100 | divided_by: threshold | at_most: 100 -%}
+  <div class="ship-meter glass{% if remaining <= 0 %} is-unlocked{% endif %}" data-ship-meter>
+    <p class="ship-meter__text">
+      {% render 'icon', name: 'truck', px: 18 %}
+      {%- if remaining <= 0 -%}
+        <span>{{ 'cart.free_shipping_unlocked' | t }}</span>
+      {%- else -%}
+        <span>{{ 'cart.free_shipping_away_html' | t: amount: remaining | money }}</span>
+      {%- endif -%}
+    </p>
+    <div class="meter"><div class="meter__bar" style="width: {{ pct }}%"></div></div>
+  </div>
+{%- endif -%}
+
+{%- if cart.item_count > 0 -%}
+  <ul class="cart-lines" role="list">
+    {%- for item in cart.items -%}
+      <li class="cart-line glass glass--clear" data-line data-key="{{ item.key }}" style="--i: {{ forloop.index0 }}">
+        <a class="cart-line__media" href="{{ item.url }}">
+          {%- if item.image -%}<img src="{{ item.image | image_url: width: 200 }}" alt="{{ item.title | escape }}" width="84" height="104" loading="lazy">{%- endif -%}
+        </a>
+        <div class="cart-line__body">
+          <a class="cart-line__title" href="{{ item.url }}">{{ item.product.title }}</a>
+          {%- unless item.product.has_only_default_variant -%}<p class="cart-line__meta">{{ item.variant.title }}</p>{%- endunless -%}
+          {%- for p in item.properties -%}
+            {%- assign first_char = p.first | slice: 0 -%}
+            {%- if p.last != blank and first_char != '_' -%}<p class="cart-line__meta">{{ p.first }}: {{ p.last }}</p>{%- endif -%}
+          {%- endfor -%}
+          <div class="cart-line__row">
+            <div class="qty qty--sm">
+              <button class="qty__btn" type="button" data-qty-change="-1" data-key="{{ item.key }}" aria-label="{{ 'cart.decrease' | t }}">−</button>
+              <input class="qty__input" type="number" value="{{ item.quantity }}" min="0" inputmode="numeric" data-qty-input data-key="{{ item.key }}" aria-label="{{ 'cart.quantity' | t }}">
+              <button class="qty__btn" type="button" data-qty-change="1" data-key="{{ item.key }}" aria-label="{{ 'cart.increase' | t }}">+</button>
+            </div>
+            <span class="cart-line__price">{{ item.final_line_price | money }}</span>
+          </div>
+          <button class="cart-line__remove" type="button" data-line-remove data-key="{{ item.key }}">{{ 'cart.remove' | t }}</button>
+        </div>
+      </li>
+    {%- endfor -%}
+  </ul>
+{%- else -%}
+  <div class="cart-empty">
+    {% render 'mascot', name: 'classic', width: 140 %}
+    <h3>{{ 'cart.empty_title' | t }}</h3>
+    <p class="muted">{{ 'cart.empty_body' | t }}</p>
+    <a href="{{ routes.all_products_collection_url }}" class="btn btn--primary" data-drawer-close>{{ 'cart.start_shopping' | t }}</a>
+  </div>
+{%- endif -%}

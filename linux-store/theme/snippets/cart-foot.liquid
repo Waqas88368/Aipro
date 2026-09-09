@@ -1,0 +1,20 @@
+{%- if cart.item_count > 0 -%}
+  <details class="cart-note">
+    <summary>{{ 'cart.add_note' | t }} {% render 'icon', name: 'chevron-down', px: 14 %}</summary>
+    <textarea class="textarea" name="note" data-cart-note placeholder="{{ 'cart.note_placeholder' | t }}">{{ cart.note }}</textarea>
+  </details>
+  <div class="cart-totals">
+    {%- if cart.total_discount > 0 -%}
+      <div class="cart-totals__row"><span>{{ 'cart.discount' | t }}</span><span>−{{ cart.total_discount | money }}</span></div>
+    {%- endif -%}
+    <div class="cart-totals__row cart-totals__row--total"><span>{{ 'cart.subtotal' | t }}</span><span class="money" data-cart-total>{{ cart.total_price | money }}</span></div>
+    <p class="small muted">{{ 'cart.shipping_note' | t }}</p>
+  </div>
+  <form action="{{ routes.cart_url }}" method="post" class="cart-actions" style="display:grid;gap:10px">
+    <button class="btn btn--primary btn--lg btn--block" type="submit" name="checkout">{% render 'icon', name: 'lock', px: 18 %}{{ 'cart.checkout' | t }}</button>
+    {%- if context == 'drawer' and settings.cart_type == 'drawer' -%}
+      <a href="{{ routes.cart_url }}" class="btn btn--ghost btn--sm btn--block">{{ 'cart.view_bag' | t }}</a>
+    {%- endif -%}
+  </form>
+  <div class="payment-icons">{%- for type in shop.enabled_payment_types -%}{{ type | payment_type_svg_tag }}{%- endfor -%}</div>
+{%- endif -%}

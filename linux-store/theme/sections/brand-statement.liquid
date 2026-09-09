@@ -1,0 +1,32 @@
+{%- assign s = section.settings -%}
+<section class="section wrap" id="s-{{ section.id }}">
+  <div class="statement glass" data-reveal>
+    <span class="statement__stitch" aria-hidden="true"></span>
+    {%- if s.eyebrow != blank -%}<p class="eyebrow">{{ s.eyebrow }}</p>{%- endif -%}
+    <h2 class="statement__quote">{{ s.heading }}</h2>
+    {%- if s.body != blank -%}<p class="lede" style="text-align:center">{{ s.body }}</p>{%- endif -%}
+    {%- if s.show_mascots -%}
+      <div class="statement__mascots" aria-hidden="true">
+        {% render 'mascot', name: 'classic', width: 110 %}
+        {% render 'mascot', name: 'skate-spray', width: 110 %}
+        {% render 'mascot', name: 'boombox', width: 110 %}
+      </div>
+    {%- endif -%}
+    {%- if s.cta_label != blank -%}<a href="{{ s.cta_url | default: '/pages/about' }}" class="btn btn--glass">{{ s.cta_label }}{% render 'icon', name: 'arrow-up-right', px: 16 %}</a>{%- endif -%}
+    <span class="statement__stitch statement__stitch--bottom" aria-hidden="true"></span>
+  </div>
+</section>
+{% schema %}
+{
+  "name": "Brand statement",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Who we are" },
+    { "type": "richtext", "id": "heading", "label": "Heading", "default": "<p>A penguin with a spray can. A brand with a <em>needle</em>.</p>" },
+    { "type": "textarea", "id": "body", "label": "Text", "default": "LINUX is a Cairo streetwear label. Every piece is embroidered — not printed — so the mark lives in the fabric, not on it." },
+    { "type": "checkbox", "id": "show_mascots", "label": "Show penguins", "default": true },
+    { "type": "text", "id": "cta_label", "label": "Button", "default": "Our story" },
+    { "type": "url", "id": "cta_url", "label": "Link" }
+  ],
+  "presets": [ { "name": "Brand statement" } ]
+}
+{% endschema %}

@@ -1,0 +1,16 @@
+{
+  "sections": {
+    "main": { "type": "contact", "settings": {} },
+    "faq": {
+      "type": "faq",
+      "blocks": {
+        "q1": { "type": "question", "settings": { "question": "How long does delivery take?", "answer": "<p>Cairo &amp; Giza: 1–2 days. Rest of Egypt: 2–4 days.</p>" } },
+        "q2": { "type": "question", "settings": { "question": "Can I exchange my size?", "answer": "<p>Yes — within 14 days, unworn with tags.</p>" } },
+        "q3": { "type": "question", "settings": { "question": "Do you ship outside Egypt?", "answer": "<p>Not yet — message us on WhatsApp and we'll sort something out.</p>" } }
+      },
+      "block_order": ["q1", "q2", "q3"],
+      "settings": { "eyebrow": "FAQ", "heading": "Before you ask", "body": "", "open_first": true, "cta_label": "" }
+    }
+  },
+  "order": ["main", "faq"]
+}

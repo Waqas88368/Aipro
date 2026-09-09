@@ -7,11 +7,11 @@
 	"scripts": {
 		"setup": {
 			"enabled": true,
-			"command": null
+			"command": "cd linux-store/dev && npm install --no-audit --no-fund"
 		},
 		"run": {
 			"enabled": true,
-			"command": null
+			"command": "cd linux-store/dev && PORT=3000 node server.mjs"
 		},
 		"archive": {
 			"enabled": true,
@@ -19,7 +19,7 @@
 		},
 		"check": {
 			"enabled": true,
-			"command": null
+			"command": "cd linux-store/dev && node check.mjs"
 		}
 	},
 	"mcpServers": []

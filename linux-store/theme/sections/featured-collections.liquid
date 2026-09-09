@@ -1,0 +1,56 @@
+{%- assign s = section.settings -%}
+<section class="section wrap" id="s-{{ section.id }}">
+  <div class="section-head">
+    <div class="section-head__text" data-reveal>
+      {%- if s.eyebrow != blank -%}<p class="eyebrow">{% if s.number != blank %}<span class="eyebrow__num">{{ s.number }}</span>{% endif %}{{ s.eyebrow }}</p>{%- endif -%}
+      <h2>{{ s.heading }}</h2>
+    </div>
+    <a href="{{ routes.collections_url }}" class="btn btn--ghost btn--sm" data-reveal>{{ 'general.view_all' | t }}</a>
+  </div>
+  <div class="bento">
+    {%- for block in section.blocks -%}
+      {%- liquid
+        assign bs = block.settings
+        assign coll = bs.collection
+        assign img = bs.image
+        if img == blank and coll.image
+          assign img = coll.image
+        endif
+        if img == blank and coll.products.first.featured_image
+          assign img = coll.products.first.featured_image
+        endif
+        assign url = coll.url | default: routes.all_products_collection_url
+        assign label = bs.label | default: coll.title
+      -%}
+      <a href="{{ url }}" class="bento__tile bento__tile--{{ bs.size | default: 'small' }}" data-reveal style="--i: {{ forloop.index0 }}" {{ block.shopify_attributes }}>
+        {%- if img != blank -%}
+          <img src="{{ img | image_url: width: 1000 }}" alt="" width="1000" height="1000" loading="lazy">
+        {%- else -%}
+          <img src="{{ 'brand-lookbook-1.webp' | asset_url }}" alt="" width="1000" height="1334" loading="lazy">
+        {%- endif -%}
+        <span class="bento__label glass glass--solid">
+          <span><strong>{{ label }}</strong>{% if coll.products_count %}<small>{{ 'collections.count' | t: count: coll.products_count }}</small>{% elsif bs.sub != blank %}<small>{{ bs.sub }}</small>{% endif %}</span>
+          <span class="bento__arrow">{% render 'icon', name: 'arrow-right', px: 18 %}</span>
+        </span>
+      </a>
+    {%- endfor -%}
+  </div>
+</section>
+{% schema %}
+{
+  "name": "Featured collections",
+  "settings": [
+    { "type": "text", "id": "number", "label": "Section number", "default": "02" },
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Collections" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Shop by drop" }
+  ],
+  "blocks": [ { "type": "collection", "name": "Collection", "settings": [
+    { "type": "collection", "id": "collection", "label": "Collection" },
+    { "type": "image_picker", "id": "image", "label": "Image override" },
+    { "type": "text", "id": "label", "label": "Label override" },
+    { "type": "text", "id": "sub", "label": "Sub label" },
+    { "type": "select", "id": "size", "label": "Tile size", "options": [ { "value": "small", "label": "Small" }, { "value": "wide", "label": "Wide" }, { "value": "large", "label": "Large" } ], "default": "small" }
+  ] } ],
+  "presets": [ { "name": "Featured collections", "blocks": [ { "type": "collection", "settings": { "size": "large" } }, { "type": "collection" }, { "type": "collection" }, { "type": "collection", "settings": { "size": "wide" } } ] } ]
+}
+{% endschema %}

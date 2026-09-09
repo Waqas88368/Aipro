@@ -1,0 +1,120 @@
+{
+  "sections": {
+    "hero": {
+      "type": "hero-embroidery",
+      "settings": {
+        "height": 100, "overlay": 40, "align": "start",
+        "eyebrow": "LINUX · Cairo · FW26",
+        "heading": "Stitched in Cairo. Worn everywhere.",
+        "subheading": "Heavyweight streetwear with embroidered details — made to move with you.",
+        "cta_label": "Shop the drop", "cta_url": "/collections/winter-collection",
+        "cta2_label": "Customize yours", "cta2_url": "/pages/customize",
+        "show_trust": true, "trust_1": "Free shipping over LE 2,000", "trust_2": "14-day easy exchange", "trust_3": "Embroidered, not printed",
+        "show_mascot": true, "mascot": "skate-spray", "chip_1": "NEW DROP", "chip_2": "CAIRO · 2026"
+      }
+    },
+    "marquee": {
+      "type": "marquee",
+      "blocks": {
+        "m1": { "type": "item", "settings": { "text": "Free shipping over LE 2,000" } },
+        "m2": { "type": "item", "settings": { "text": "Embroidered, not printed" } },
+        "m3": { "type": "item", "settings": { "text": "14-day easy exchange" } },
+        "m4": { "type": "item", "settings": { "text": "Heavyweight 340gsm melton" } },
+        "m5": { "type": "item", "settings": { "text": "Cash on delivery across Egypt" } }
+      },
+      "block_order": ["m1", "m2", "m3", "m4", "m5"],
+      "settings": {}
+    },
+    "bestsellers": {
+      "type": "product-carousel",
+      "settings": { "number": "01", "eyebrow": "Best sellers", "heading": "Most wanted", "collection": "shopify://collections/winter-collection", "limit": 8 }
+    },
+    "collections": {
+      "type": "featured-collections",
+      "blocks": {
+        "c1": { "type": "collection", "settings": { "collection": "shopify://collections/winter-collection", "label": "Winter collection", "size": "large" } },
+        "c2": { "type": "collection", "settings": { "collection": "shopify://collections/summer-collection", "label": "Summer collection", "size": "small" } },
+        "c3": { "type": "collection", "settings": { "collection": "shopify://collections/customize-print", "label": "Customize", "sub": "Your design, our thread", "size": "small" } },
+        "c4": { "type": "collection", "settings": { "collection": "shopify://collections/all", "label": "Everything", "size": "wide" } }
+      },
+      "block_order": ["c1", "c2", "c3", "c4"],
+      "settings": { "number": "02", "eyebrow": "Collections", "heading": "Shop by drop" }
+    },
+    "campaign": {
+      "type": "campaign",
+      "settings": {
+        "eyebrow": "The drop", "heading": "Green is the new black.",
+        "body": "Forest heavyweight fleece, cream embroidery, rounded everything. Built for Cairo nights.",
+        "primary_label": "Shop hoodies", "primary_link": "/collections/winter-collection",
+        "secondary_label": "Customize yours", "secondary_link": "/pages/customize",
+        "note": "LIMITED RUN · FW26", "show_mascot": true, "mascot": "boombox"
+      }
+    },
+    "arrivals": {
+      "type": "product-grid",
+      "settings": { "number": "03", "eyebrow": "New arrivals", "heading": "Fresh off the machine", "collection": "shopify://collections/all", "limit": 8, "columns": 4 }
+    },
+    "look": {
+      "type": "shop-the-look",
+      "blocks": {
+        "h1": { "type": "hotspot", "settings": { "product": "shopify://products/hoodie-anime-black", "x": 50, "y": 40 } },
+        "h2": { "type": "hotspot", "settings": { "product": "shopify://products/anime-shirt", "x": 42, "y": 75 } }
+      },
+      "block_order": ["h1", "h2"],
+      "settings": { "number": "04", "eyebrow": "Shop the look", "heading": "Full fit, one tap", "body": "Tap a dot on the photo, or add straight from the list." }
+    },
+    "props": {
+      "type": "value-props",
+      "blocks": {
+        "p1": { "type": "prop", "settings": { "icon": "truck", "title": "Fast delivery", "text": "1–2 days in Cairo, 2–4 across Egypt." } },
+        "p2": { "type": "prop", "settings": { "icon": "package", "title": "Cash on delivery", "text": "Pay when it lands. Cards too." } },
+        "p3": { "type": "prop", "settings": { "icon": "return", "title": "14-day exchange", "text": "Wrong size? Swap it, no drama." } },
+        "p4": { "type": "prop", "settings": { "icon": "needle", "title": "Embroidered, not printed", "text": "Thread that outlives the trend." } }
+      },
+      "block_order": ["p1", "p2", "p3", "p4"],
+      "settings": {}
+    },
+    "statement": {
+      "type": "brand-statement",
+      "settings": {
+        "eyebrow": "Who we are",
+        "heading": "<p>A penguin with a spray can. A brand with a <em>needle</em>.</p>",
+        "body": "LINUX is a Cairo streetwear label. Every piece is embroidered — not printed — so the mark lives in the fabric, not on it.",
+        "show_mascots": true, "cta_label": "Our story", "cta_url": "/pages/about"
+      }
+    },
+    "reviews": {
+      "type": "testimonials",
+      "blocks": {
+        "t1": { "type": "quote", "settings": { "quote": "Heaviest hoodie I own and the embroidery is unreal. Worth every pound.", "name": "Omar K.", "meta": "Cairo", "rating": 5 } },
+        "t2": { "type": "quote", "settings": { "quote": "Exchange was painless and the fit guide was spot on.", "name": "Salma A.", "meta": "Alexandria", "rating": 5 } },
+        "t3": { "type": "quote", "settings": { "quote": "The penguin sticker alone is worth it. Site looks insane too.", "name": "Youssef M.", "meta": "Giza", "rating": 5 } }
+      },
+      "block_order": ["t1", "t2", "t3"],
+      "settings": { "number": "05", "eyebrow": "Reviews", "heading": "Worn & rated", "rating_text": "4.9 / 5 · 300+ orders" }
+    },
+    "ugc": {
+      "type": "instagram-feed",
+      "blocks": { "u1": { "type": "post" }, "u2": { "type": "post" }, "u3": { "type": "post" }, "u4": { "type": "post" }, "u5": { "type": "post" }, "u6": { "type": "post" } },
+      "block_order": ["u1", "u2", "u3", "u4", "u5", "u6"],
+      "settings": { "eyebrow": "Community", "heading": "Worn in the wild", "handle": "@linux.eg" }
+    },
+    "faq": {
+      "type": "faq",
+      "blocks": {
+        "q1": { "type": "question", "settings": { "question": "How long does delivery take?", "answer": "<p>Cairo &amp; Giza: 1–2 days. Rest of Egypt: 2–4 days. Your estimate is confirmed at checkout.</p>" } },
+        "q2": { "type": "question", "settings": { "question": "Can I exchange my size?", "answer": "<p>Yes — within 14 days, unworn with tags. Start an exchange from your account page or WhatsApp.</p>" } },
+        "q3": { "type": "question", "settings": { "question": "Do you accept cash on delivery?", "answer": "<p>Yes, everywhere in Egypt. Cards and Meeza too.</p>" } },
+        "q4": { "type": "question", "settings": { "question": "How does Customize work?", "answer": "<p>Upload your design in the Customize studio, pick a garment and colour, preview it live and add it to your bag. We stitch it in 3–5 days.</p>" } }
+      },
+      "block_order": ["q1", "q2", "q3", "q4"],
+      "settings": { "eyebrow": "FAQ", "heading": "Questions, answered", "body": "Delivery, exchanges and sizing in one place.", "open_first": true, "cta_label": "Ask on WhatsApp", "cta_url": "https://wa.me/201110351549" }
+    },
+    "newsletter": {
+      "type": "newsletter",
+      "settings": { "eyebrow": "Join the flock", "heading": "Early access to every drop.", "body": "10% off your first order. No spam — just penguins.", "show_mascot": true }
+    },
+    "penguins": { "type": "penguin-row", "settings": {} }
+  },
+  "order": ["hero", "marquee", "bestsellers", "collections", "campaign", "arrivals", "look", "props", "statement", "reviews", "ugc", "faq", "newsletter", "penguins"]
+}

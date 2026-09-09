@@ -1,0 +1,26 @@
+{
+  "type": "header",
+  "name": "Header group",
+  "sections": {
+    "header": {
+      "type": "header",
+      "blocks": {
+        "promo": {
+          "type": "mega_promo",
+          "settings": { "menu_item": "Shop", "label": "FW26 drop", "link": "/collections/winter-collection" }
+        }
+      },
+      "block_order": ["promo"],
+      "settings": {
+        "menu": "main-menu",
+        "logo_height": 22,
+        "transparent_home": true,
+        "show_shop_cta": true,
+        "shop_cta_label": "Shop",
+        "show_announcement": true,
+        "announcement_text": "Free shipping over LE 2,000 · Cash on delivery across Egypt · 14-day exchange"
+      }
+    }
+  },
+  "order": ["header"]
+}
