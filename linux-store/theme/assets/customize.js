@@ -109,7 +109,7 @@
   /* Colour */
   root.querySelectorAll('[data-cz-color]').forEach((btn) => btn.addEventListener('click', () => {
     root.querySelectorAll('[data-cz-color]').forEach((b) => { b.classList.toggle('is-active', b === btn); b.setAttribute('aria-pressed', String(b === btn)); });
-    garment.style.setProperty('--gc', btn.dataset.czColor); colorProp.value = btn.dataset.czColor;
+    garment.style.setProperty('--gc', btn.dataset.czColor); colorProp.value = btn.dataset.czColorName || btn.dataset.czColor;
   }));
   /* Side */
   root.querySelectorAll('[data-cz-side]').forEach((btn) => btn.addEventListener('click', () => {

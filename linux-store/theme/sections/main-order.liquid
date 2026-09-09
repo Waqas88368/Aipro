@@ -2,7 +2,7 @@
   <header class="cart-page__head" data-reveal>
     <a href="{{ routes.account_url }}" class="btn btn--ghost btn--sm" style="margin-bottom:14px">{% render 'icon', name: 'arrow-left', px: 16 %}{{ 'customer.order.back' | t }}</a>
     <h1>{{ 'customer.order.title' | t: name: order.name }}</h1>
-    <p class="muted">{{ 'customer.order.placed' | t: date: order.created_at | date: format: 'month_day_year' }} · <span class="status status--{{ order.financial_status }}">{{ order.financial_status_label }}</span> <span class="status status--{{ order.fulfillment_status }}">{{ order.fulfillment_status_label }}</span></p>
+    <p class="muted">{%- assign placed_date = order.created_at | date: format: 'month_day_year' -%}{{ 'customer.order.placed' | t: date: placed_date }} · <span class="status status--{{ order.financial_status }}">{{ order.financial_status_label }}</span> <span class="status status--{{ order.fulfillment_status }}">{{ order.fulfillment_status_label }}</span></p>
   </header>
   <div class="account__grid">
     {% render 'account-nav', active: 'orders' %}

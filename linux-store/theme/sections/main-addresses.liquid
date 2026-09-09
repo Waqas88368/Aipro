@@ -25,7 +25,7 @@
                 {{ address | format_address }}
                 <div class="address-card__actions">
                   <button class="btn btn--ghost btn--sm" type="button" data-address-toggle="{{ address.id }}">{{ 'customer.addresses.edit' | t }}</button>
-                  <form method="post" action="/account/addresses/{{ address.id }}" onsubmit="return confirm({{ 'customer.addresses.confirm_delete' | t | json }})"><input type="hidden" name="_method" value="delete"><button class="btn btn--ghost btn--sm" type="submit">{{ 'customer.addresses.delete' | t }}</button></form>
+                  <form method="post" action="{{ routes.account_addresses_url }}/{{ address.id }}" onsubmit="return confirm({{ 'customer.addresses.confirm_delete' | t | json }})"><input type="hidden" name="_method" value="delete"><button class="btn btn--ghost btn--sm" type="submit">{{ 'customer.addresses.delete' | t }}</button></form>
                 </div>
                 <div class="address-form-wrap" data-address-form="{{ address.id }}" hidden>
                   {%- form 'customer_address', address, class: 'address-form' -%}

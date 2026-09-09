@@ -8,7 +8,7 @@
       {%- for article in blog.articles -%}
         <article class="post glass glass--hover{% if forloop.first and paginate.current_page == 1 %} post--featured{% endif %}" data-reveal style="--i: {{ forloop.index0 | modulo: 3 }}">
           <a class="post__media media media__zoom" href="{{ article.url }}" tabindex="-1">
-            {%- if article.image -%}<img src="{{ article.image | image_url: width: 1000 }}" alt="{{ article.image.alt | escape }}" loading="lazy" width="1000" height="625">{%- else -%}<img src="{{ 'brand-still-life.webp' | asset_url }}" alt="" loading="lazy">{%- endif -%}
+            {%- if article.image -%}<img src="{{ article.image | image_url: width: 1000 }}" alt="{{ article.image.alt | escape }}" loading="lazy" width="1000" height="625">{%- else -%}<img src="{{ 'brand-still-life.webp' | asset_url }}" alt="" width="1400" height="875" loading="lazy">{%- endif -%}
           </a>
           <div class="post__body">
             <p class="post__meta"><time datetime="{{ article.published_at | date: '%Y-%m-%d' }}">{{ article.published_at | date: format: 'month_day_year' }}</time>{%- if article.tags.size > 0 -%} · {{ article.tags | join: ' · ' }}{%- endif -%}</p>

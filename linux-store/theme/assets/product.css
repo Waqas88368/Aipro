@@ -45,13 +45,8 @@ html[dir="rtl"] .gallery__nav svg { transform: scaleX(-1); }
 .pdp__rating { display: inline-flex; align-items: center; gap: 6px; font: 600 13px var(--font-body); color: var(--fg-70); }
 .pdp__rating svg { color: var(--sand); }
 .pdp__form { display: grid; gap: 18px; }
-.pdp__option { border: 0; padding: 0; margin: 0; display: grid; gap: 10px; }
-.pdp__option-label { display: flex; align-items: center; gap: 8px; width: 100%; padding: 0; font: 600 13px var(--font-body); color: var(--fg-70); text-transform: uppercase; letter-spacing: .08em; }
-.pdp__option-label strong { color: var(--fg); text-transform: none; letter-spacing: 0; font-size: 14px; }
 .pdp__size-guide { margin-inline-start: auto; display: inline-flex; align-items: center; gap: 6px; border: 0; background: none; color: var(--fg-70); font: 600 12px var(--font-body); text-decoration: underline; text-underline-offset: 3px; cursor: pointer; text-transform: none; letter-spacing: 0; }
 .pdp__size-guide:hover { color: var(--accent); }
-.pill--swatch { width: 40px; height: 40px; min-width: 0; min-height: 0; padding: 0; border-radius: 50%; }
-.pill.is-missing { display: none; }
 .pdp__fit { display: inline-flex; align-items: center; gap: 6px; margin-top: -6px; }
 .pdp__fit svg { color: var(--accent); }
 .pdp__stock { display: inline-flex; align-items: center; gap: 8px; font: 600 13px var(--font-body); color: var(--fg-70); }

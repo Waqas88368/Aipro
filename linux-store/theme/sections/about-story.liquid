@@ -2,7 +2,7 @@
 <section class="page wrap">
   <div class="about-hero glass" data-reveal>
     <div class="media media__zoom">
-      {%- if s.image != blank -%}<img src="{{ s.image | image_url: width: 1200 }}" alt="" loading="eager">{%- else -%}<img src="{{ 'brand-editorial.webp' | asset_url }}" alt="" width="1400" height="788" loading="eager">{%- endif -%}
+      {%- if s.image != blank -%}<img src="{{ s.image | image_url: width: 1200 }}" alt="{{ s.image.alt | escape }}" width="{{ s.image.width }}" height="{{ s.image.height }}" loading="eager">{%- else -%}<img src="{{ 'brand-editorial.webp' | asset_url }}" alt="" width="1400" height="788" loading="eager">{%- endif -%}
     </div>
     <div style="display:grid;gap:16px">
       <p class="eyebrow">{{ s.eyebrow }}</p>

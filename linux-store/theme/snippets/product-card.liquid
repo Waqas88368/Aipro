@@ -18,7 +18,6 @@
     assign on_sale = true
   endif
   assign is_new = false
-  assign days_old = 'now' | date: '%s' | minus: product.published_at | date: '%s'
   if product.published_at
     assign published_s = product.published_at | date: '%s' | plus: 0
     assign now_s = 'now' | date: '%s' | plus: 0

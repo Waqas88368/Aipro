@@ -22,8 +22,14 @@
     <link rel="apple-touch-icon" href="{{ 'favicon-180.png' | asset_url }}">
   {%- endif -%}
 
+  {%- liquid
+    assign seo_page_title = page_title
+    if template.name == 'search' and request.query.view == 'wishlist'
+      assign seo_page_title = 'wishlist.title' | t
+    endif
+  -%}
   {%- capture seo_title -%}
-    {{ page_title }}{% if current_tags %} &ndash; {{ current_tags | join: ', ' }}{% endif %}{% if current_page != 1 %} &ndash; {{ 'general.meta.page' | t: page: current_page }}{% endif %}{% unless page_title contains shop.name %} &ndash; {{ shop.name }}{% endunless %}
+    {{ seo_page_title }}{% if current_tags %} &ndash; {{ current_tags | join: ', ' }}{% endif %}{% if current_page != 1 %} &ndash; {{ 'general.meta.page' | t: page: current_page }}{% endif %}{% unless seo_page_title contains shop.name %} &ndash; {{ shop.name }}{% endunless %}
   {%- endcapture -%}
   <title>{{ seo_title | strip }}</title>
   {%- if page_description -%}<meta name="description" content="{{ page_description | escape }}">{%- endif -%}
@@ -39,7 +45,6 @@
         assign font_css = 'https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800;900&family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap'
       endif
     -%}
-    <link rel="preload" as="style" href="{{ font_css }}">
     <link rel="stylesheet" href="{{ font_css }}" media="print" onload="this.media='all';this.onload=null">
     <noscript><link rel="stylesheet" href="{{ font_css }}"></noscript>
   {%- endunless -%}

@@ -43,7 +43,13 @@
     {%- if collection.products.size > 0 -%}
       <div class="product-grid" style="--cols: {{ s.columns | default: 4 }}" data-collection-grid>
         {%- for product in collection.products -%}
-          {% render 'product-card', product: product, collection: collection, index: forloop.index0, lazy: forloop.index > 4 %}
+          {%- liquid
+            assign lazy = false
+            if forloop.index > 4
+              assign lazy = true
+            endif
+          -%}
+          {% render 'product-card', product: product, collection: collection, index: forloop.index0, lazy: lazy %}
         {%- endfor -%}
       </div>
     {%- else -%}

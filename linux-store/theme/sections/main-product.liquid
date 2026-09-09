@@ -3,16 +3,13 @@
   assign current = product.selected_or_first_available_variant
   assign media_count = product.media.size
   assign size_option = null
-  assign color_option = null
   for opt in product.options_with_values
     assign lower = opt.name | downcase
     if lower == 'size' or lower == 'sizes' or lower == 'المقاس' or lower == 'مقاس'
       assign size_option = opt
     endif
-    if lower == 'color' or lower == 'colour' or lower == 'اللون'
-      assign color_option = opt
-    endif
   endfor
+  assign form_image = current.featured_image | default: product.featured_image | image_url: width: 200
 -%}
 <section class="pdp wrap" id="pdp-{{ section.id }}" data-product data-product-handle="{{ product.handle }}" data-section-id="{{ section.id }}">
   {%- if s.show_breadcrumb -%}
@@ -76,7 +73,7 @@
           </div>
         </div>
 
-        {%- form 'product', product, id: 'product-form', class: 'pdp__form', data-product-form: '', data-image: current.featured_image | default: product.featured_image | image_url: width: 200 -%}
+        {%- form 'product', product, id: 'product-form', class: 'pdp__form', data-product-form: '', data-image: form_image -%}
           <input type="hidden" name="id" value="{{ current.id }}" data-variant-id>
           {%- unless product.has_only_default_variant -%}
             {%- for option in product.options_with_values -%}
@@ -145,7 +142,7 @@
           <div class="pdp__delivery">
             <div>{% render 'icon', name: 'truck', px: 18 %}<span><strong>{{ 'products.delivery_cairo' | t }}</strong> {{ settings.delivery_cairo }}</span></div>
             <div>{% render 'icon', name: 'pin', px: 18 %}<span><strong>{{ 'products.delivery_egypt' | t }}</strong> {{ settings.delivery_egypt }}</span></div>
-            <div>{% render 'icon', name: 'return', px: 18 %}<span>{{ 'cart.free_shipping_away' | t: amount: settings.free_shipping_threshold | times: 100 | money | replace: ' away from free shipping', '' }} → {{ 'products.shipping' | t | downcase }}</span></div>
+            {%- if settings.free_shipping_threshold > 0 -%}{%- assign fs_amount = settings.free_shipping_threshold | times: 100 | money -%}<div>{% render 'icon', name: 'return', px: 18 %}<span>{{ 'products.free_shipping_over' | t: amount: fs_amount }}</span></div>{%- endif -%}
           </div>
         {%- endif -%}
       </div>
@@ -201,7 +198,7 @@
 
 <div class="lightbox" data-lightbox aria-hidden="true" inert>
   <button class="icon-btn glass glass--clear lightbox__close" type="button" data-lightbox-close aria-label="{{ 'accessibility.close' | t }}">{% render 'icon', name: 'close' %}</button>
-  <img class="lightbox__img" src="" alt="" data-lightbox-img>
+  <img class="lightbox__img" src="{{ 'hero-embroidery-poster.webp' | asset_url }}" alt="" width="1600" height="1600" data-lightbox-img>
 </div>
 
 {% schema %}

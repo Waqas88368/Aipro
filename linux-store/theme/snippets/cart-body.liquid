@@ -9,7 +9,8 @@
       {%- if remaining <= 0 -%}
         <span>{{ 'cart.free_shipping_unlocked' | t }}</span>
       {%- else -%}
-        <span>{{ 'cart.free_shipping_away_html' | t: amount: remaining | money }}</span>
+        {%- assign remaining_money = remaining | money -%}
+        <span>{{ 'cart.free_shipping_away_html' | t: amount: remaining_money }}</span>
       {%- endif -%}
     </p>
     <div class="meter"><div class="meter__bar" style="width: {{ pct }}%"></div></div>
@@ -28,7 +29,13 @@
           {%- unless item.product.has_only_default_variant -%}<p class="cart-line__meta">{{ item.variant.title }}</p>{%- endunless -%}
           {%- for p in item.properties -%}
             {%- assign first_char = p.first | slice: 0 -%}
-            {%- if p.last != blank and first_char != '_' -%}<p class="cart-line__meta">{{ p.first }}: {{ p.last }}</p>{%- endif -%}
+            {%- if p.last != blank and first_char != '_' -%}
+              <p class="cart-line__meta">{{ p.first }}:
+                {%- if p.last contains '/uploads/' -%} <a href="{{ p.last }}" target="_blank" rel="noopener">{{ 'cart.view_file' | t }}</a>
+                {%- elsif p.last contains 'upload:' -%} {{ p.last | remove_first: 'upload:' }}
+                {%- else -%} {{ p.last }}{%- endif -%}
+              </p>
+            {%- endif -%}
           {%- endfor -%}
           <div class="cart-line__row">
             <div class="qty qty--sm">

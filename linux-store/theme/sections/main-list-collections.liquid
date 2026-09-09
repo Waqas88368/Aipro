@@ -11,7 +11,7 @@
       {%- if c.handle == 'frontpage' or c.handle == 'all' -%}{%- continue -%}{%- endif -%}
       {%- assign img = c.image | default: c.products.first.featured_image -%}
       <a href="{{ c.url }}" class="bento__tile" data-reveal style="--i: {{ forloop.index0 | modulo: 4 }}">
-        {%- if img -%}<img src="{{ img | image_url: width: 900 }}" alt="" width="900" height="1200" loading="lazy">{%- else -%}<img src="{{ 'brand-lookbook-2.webp' | asset_url }}" alt="" loading="lazy">{%- endif -%}
+        {%- if img -%}<img src="{{ img | image_url: width: 900 }}" alt="" width="900" height="1200" loading="lazy">{%- else -%}<img src="{{ 'brand-lookbook-2.webp' | asset_url }}" alt="" width="900" height="1200" loading="lazy">{%- endif -%}
         <span class="bento__label glass glass--solid"><span><strong>{{ c.title }}</strong><small>{{ 'collections.count' | t: count: c.products_count }}</small></span><span class="bento__arrow">{% render 'icon', name: 'arrow-right', px: 18 %}</span></span>
       </a>
     {%- endfor -%}

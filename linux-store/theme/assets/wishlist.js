@@ -47,7 +47,7 @@
       empty && (empty.hidden = true);
       const cards = await Promise.all(list.map(async (h) => {
         try {
-          const res = await fetch(`${root}/products/${h}?section_id=product-card-json`);
+          const res = await fetch(`${root}/products/${h}?section_id=wishlist-card`);
           if (res.ok) { const html = await res.text(); if (html.includes('data-product-card')) return html; }
         } catch {}
         try {

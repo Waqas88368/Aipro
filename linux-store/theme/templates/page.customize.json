@@ -8,7 +8,7 @@
         "cap": { "type": "garment", "settings": { "shape": "cap", "label": "Cap", "fee": 0 } }
       },
       "block_order": ["hoodie", "tee", "cap"],
-      "settings": { "product": "shopify://products/hoodie-customize", "eyebrow": "Customize studio", "heading": "Your design. Our thread.", "colors": "#043020,#111111,#f5f5f0,#e6d5b8,#6b1e2b,#1b2a4a", "default_color": "#043020" }
+      "settings": { "product": "shopify://products/hoodie-customize", "eyebrow": "Customize studio", "heading": "Your design. Our thread.", "colors": "Forest:#043020,Black:#111111,Cream:#f5f5f0,Beige:#e6d5b8,Burgundy:#6b1e2b,Navy:#1b2a4a" }
     },
     "faq": {
       "type": "faq",

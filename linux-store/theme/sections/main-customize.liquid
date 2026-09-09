@@ -26,14 +26,15 @@
   <div class="cz__grid">
     <div class="cz__stage glass" data-specular data-reveal>
       <div class="cz__canvas" data-cz-canvas>
-        <div class="cz__garment" data-cz-garment style="--gc: {{ s.default_color | default: '#043020' }}">
+        {%- assign first_hex = s.colors | default: 'Forest:#043020,Black:#111111,Cream:#f5f5f0,Beige:#e6d5b8,Burgundy:#6b1e2b,Navy:#1b2a4a' | split: ',' | first | split: ':' | last | strip -%}
+        <div class="cz__garment" data-cz-garment style="--gc: {{ first_hex }}">
           <svg viewBox="0 0 400 460" data-cz-svg aria-hidden="true">
             <g data-cz-shape="tee"><path d="M120 40 L60 80 L20 160 L80 195 L95 165 L95 430 L305 430 L305 165 L320 195 L380 160 L340 80 L280 40 Q240 75 200 75 Q160 75 120 40 Z" fill="var(--gc)" stroke="rgb(255 255 255 / .12)" stroke-width="2"/><path d="M120 40 Q160 75 200 75 Q240 75 280 40" fill="none" stroke="rgb(0 0 0 / .25)" stroke-width="6"/></g>
             <g data-cz-shape="hoodie" style="display:none"><path d="M120 55 L55 95 L18 175 L80 208 L95 178 L95 430 L305 430 L305 178 L320 208 L382 175 L345 95 L280 55 Q276 20 200 20 Q124 20 120 55 Z" fill="var(--gc)" stroke="rgb(255 255 255 / .12)" stroke-width="2"/><path d="M150 60 Q200 105 250 60 Q235 92 200 92 Q165 92 150 60 Z" fill="rgb(0 0 0 / .35)"/><path d="M160 430 L160 360 Q200 345 240 360 L240 430" fill="none" stroke="rgb(0 0 0 / .2)" stroke-width="3"/><path d="M186 100 L182 150 M214 100 L218 150" stroke="rgb(255 255 255 / .35)" stroke-width="4" stroke-linecap="round"/></g>
             <g data-cz-shape="cap" style="display:none"><path d="M70 250 Q70 120 200 120 Q330 120 330 250 Z" fill="var(--gc)" stroke="rgb(255 255 255 / .12)" stroke-width="2"/><path d="M60 250 Q200 290 340 250 L380 265 Q200 330 20 265 Z" fill="var(--gc)" stroke="rgb(0 0 0 / .25)" stroke-width="2"/><path d="M200 120 L200 250" stroke="rgb(0 0 0 / .18)" stroke-width="2"/></g>
           </svg>
           <button class="cz__empty" type="button" data-cz-pick>{% render 'icon', name: 'upload', px: 22 %}<br>{{ 'customize.upload' | t }}</button>
-          <div class="cz__design" data-cz-design hidden><img alt="{{ 'customize.preview_alt' | t }}" data-cz-design-img></div>
+          <div class="cz__design" data-cz-design hidden><img alt="{{ 'customize.preview_alt' | t }}" width="400" height="400" data-cz-design-img></div>
         </div>
       </div>
       <div class="segmented cz__side-toggle" role="radiogroup" aria-label="{{ 'customize.side' | t }}">
@@ -47,7 +48,8 @@
       <input type="hidden" name="id" value="{{ current.id }}" data-variant-id>
       <input type="hidden" name="properties[_Design position]" data-cz-pos value="x:50,y:42,scale:45,side:front">
       <input type="hidden" name="properties[Garment]" data-cz-garment-prop value="tee">
-      <input type="hidden" name="properties[Colour]" data-cz-color-prop value="{{ s.default_color | default: '#043020' }}">
+      {%- assign first_color = s.colors | default: 'Forest:#043020,Black:#111111,Cream:#f5f5f0,Beige:#e6d5b8,Burgundy:#6b1e2b,Navy:#1b2a4a' | split: ',' | first | split: ':' | first | strip -%}
+      <input type="hidden" name="properties[Colour]" data-cz-color-prop value="{{ first_color | escape }}">
 
       <div class="cz__step">
         <p class="cz__step-title"><span class="badge">1</span>{{ 'customize.upload' | t }}</p>
@@ -58,7 +60,7 @@
           <input type="file" name="properties[Design file]" accept="image/png,image/jpeg,image/svg+xml,image/webp" class="visually-hidden" data-cz-file>
         </label>
         <div class="cz__file glass glass--clear" data-cz-file-row hidden>
-          <img alt="" data-cz-thumb><div><strong data-cz-filename></strong><small class="muted" data-cz-filesize></small></div>
+          <img alt="" width="48" height="48" data-cz-thumb><div><strong data-cz-filename></strong><small class="muted" data-cz-filesize></small></div>
           <button class="btn btn--ghost btn--sm" type="button" data-cz-remove>{{ 'customize.remove' | t }}</button>
         </div>
         <p class="form-error" data-cz-error hidden></p>
@@ -84,9 +86,19 @@
           {%- endfor -%}
         </div>
         <div class="cz__colors" role="radiogroup" aria-label="{{ 'customize.color' | t }}">
-          {%- assign colors = s.colors | default: '#043020,#111111,#f5f5f0,#e6d5b8,#6b1e2b,#1b2a4a' | split: ',' -%}
+          {%- assign colors = s.colors | default: 'Forest:#043020,Black:#111111,Cream:#f5f5f0,Beige:#e6d5b8,Burgundy:#6b1e2b,Navy:#1b2a4a' | split: ',' -%}
           {%- for c in colors -%}
-            <button class="pill swatch{% if forloop.first %} is-active{% endif %}" type="button" style="--swatch: {{ c | strip }}" data-cz-color="{{ c | strip }}" aria-label="{{ c | strip }}" aria-pressed="{% if forloop.first %}true{% else %}false{% endif %}"></button>
+            {%- liquid
+              assign parts = c | strip | split: ':'
+              if parts.size > 1
+                assign c_name = parts[0] | strip
+                assign c_hex = parts[1] | strip
+              else
+                assign c_name = parts[0] | strip
+                assign c_hex = parts[0] | strip
+              endif
+            -%}
+            <button class="pill swatch{% if forloop.first %} is-active{% endif %}" type="button" style="--swatch: {{ c_hex }}" data-cz-color="{{ c_hex }}" data-cz-color-name="{{ c_name | escape }}" aria-label="{{ c_name | escape }}" aria-pressed="{% if forloop.first %}true{% else %}false{% endif %}" title="{{ c_name | escape }}"></button>
           {%- endfor -%}
         </div>
       </div>
@@ -143,8 +155,7 @@
     { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Customize studio" },
     { "type": "text", "id": "heading", "label": "Heading", "default": "Your design. Our thread." },
     { "type": "textarea", "id": "subheading", "label": "Subheading" },
-    { "type": "text", "id": "colors", "label": "Garment colours (comma-separated hex)", "default": "#043020,#111111,#f5f5f0,#e6d5b8,#6b1e2b,#1b2a4a" },
-    { "type": "color", "id": "default_color", "label": "Default colour", "default": "#043020" }
+    { "type": "text", "id": "colors", "label": "Garment colours (Name:#hex, comma-separated)", "default": "Forest:#043020,Black:#111111,Cream:#f5f5f0,Beige:#e6d5b8,Burgundy:#6b1e2b,Navy:#1b2a4a" }
   ],
   "blocks": [
     { "type": "garment", "name": "Garment", "settings": [

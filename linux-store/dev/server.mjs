@@ -437,15 +437,27 @@ const server = http.createServer(async (req, res) => {
     const route = store.route(pathname, query, env);
     if (!route) return send(res, 404, await renderPage('404', { ...env, template: { name: '404', suffix: null, directory: null }, page_title: 'Not found' }));
 
-    // Section Rendering API
+    // Section Rendering API — ids resolve against the current template's
+    // JSON first (like Shopify), then the header/footer section groups, then
+    // a bare section file name.
+    const sectionSpec = (id) => {
+      const jsonFile = path.join(THEME, 'templates', `${route.template}.json`);
+      if (fs.existsSync(jsonFile)) {
+        const s = readJSON(jsonFile).sections[id];
+        if (s) return { type: s.type, settings: s.settings || {}, blocks: blocksOf(s) };
+      }
+      return { type: id, settings: store.sectionSettingsFor(id), blocks: store.sectionBlocksFor(id) };
+    };
     if (query.section_id) {
-      const html = await renderSection(query.section_id, query.section_id, store.sectionSettingsFor(query.section_id), store.sectionBlocksFor(query.section_id), { ...env, ...route.env });
+      const spec = sectionSpec(query.section_id);
+      const html = await renderSection(spec.type, query.section_id, spec.settings, spec.blocks, { ...env, ...route.env });
       return send(res, 200, html);
     }
     if (query.sections) {
       const out = {};
       for (const id of query.sections.split(',')) {
-        out[id] = await renderSection(id, id, store.sectionSettingsFor(id), store.sectionBlocksFor(id), { ...env, ...route.env });
+        const spec = sectionSpec(id);
+        out[id] = await renderSection(spec.type, id, spec.settings, spec.blocks, { ...env, ...route.env });
       }
       return json(res, out);
     }
