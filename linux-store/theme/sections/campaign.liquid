@@ -18,7 +18,6 @@
       </div>
       <p class="mono muted">{% render 'tr', value: s.note, key: 'home.campaign_note' %}</p>
     </div>
-    {%- if s.show_mascot -%}<div class="campaign__mascot" aria-hidden="true">{% render 'mascot', name: s.mascot, width: 170 %}</div>{%- endif -%}
   </div>
 </section>
 {% schema %}
@@ -75,40 +74,6 @@
       "type": "text",
       "id": "note",
       "label": "Note (blank = translated)"
-    },
-    {
-      "type": "checkbox",
-      "id": "show_mascot",
-      "label": "Show penguin",
-      "default": true
-    },
-    {
-      "type": "select",
-      "id": "mascot",
-      "label": "Penguin",
-      "options": [
-        {
-          "value": "boombox",
-          "label": "Boombox"
-        },
-        {
-          "value": "skate",
-          "label": "Skate"
-        },
-        {
-          "value": "classic",
-          "label": "Classic"
-        },
-        {
-          "value": "hoodie-sit",
-          "label": "Hoodie"
-        },
-        {
-          "value": "astro",
-          "label": "Astronaut"
-        }
-      ],
-      "default": "boombox"
     }
   ],
   "presets": [

@@ -12,7 +12,7 @@
         {% render 'mascot', name: 'boombox', width: 110 %}
       </div>
     {%- endif -%}
-    <a href="{{ s.cta_url | default: '/pages/about' }}" class="btn btn--glass">{% render 'tr', value: s.cta_label, key: k_cta %}{% render 'icon', name: 'arrow-up-right', px: 16 %}</a>
+    <a href="{%- if s.cta_url != blank -%}{{ s.cta_url }}{%- else -%}{{ pages['about'].url | default: routes.root_url }}{%- endif -%}" class="btn btn--glass">{% render 'tr', value: s.cta_label, key: k_cta %}{% render 'icon', name: 'arrow-up-right', px: 16 %}</a>
     <span class="statement__stitch statement__stitch--bottom" aria-hidden="true"></span>
   </div>
 </section>

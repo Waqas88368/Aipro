@@ -3,6 +3,21 @@
     "main": {
       "type": "main-product",
       "blocks": {
+        "bundle": {
+          "type": "bundle",
+          "settings": {
+            "tier1_qty": 2,
+            "tier1_pct": 10,
+            "tier2_qty": 3,
+            "tier2_pct": 15,
+            "tier3_qty": 0,
+            "tier3_pct": 20
+          }
+        },
+        "fit": {
+          "type": "fit_finder",
+          "settings": {}
+        },
         "desc": {
           "type": "description",
           "settings": {}
@@ -17,6 +32,8 @@
         }
       },
       "block_order": [
+        "bundle",
+        "fit",
         "desc",
         "fabric",
         "ship"

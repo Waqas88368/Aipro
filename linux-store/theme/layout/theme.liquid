@@ -56,9 +56,11 @@
   {{ 'glass.css' | asset_url | stylesheet_tag }}
   {{ 'components.css' | asset_url | stylesheet_tag }}
   {%- if settings.motion_scale != 0 -%}{{ 'motion.css' | asset_url | stylesheet_tag }}{%- endif -%}
+  {%- if template.suffix == 'customize' -%}{{ 'customize.css' | asset_url | stylesheet_tag }}{%- endif -%}
   {%- if template.name == 'product' -%}{{ 'product.css' | asset_url | stylesheet_tag }}{%- endif -%}
   {%- if template.name == 'collection' or template.name == 'search' or template.name == 'list-collections' -%}{{ 'collection.css' | asset_url | stylesheet_tag }}{%- endif -%}
   {%- if template.directory == 'customers' or template.name == 'cart' or template.name == 'page' or template.name == 'blog' or template.name == 'article' or template.name == '404' -%}{{ 'pages.css' | asset_url | stylesheet_tag }}{%- endif -%}
+  {{ 'offers.css' | asset_url | stylesheet_tag }}
 
   {% style %}
     :root {
@@ -89,6 +91,8 @@
     };
     LINUX.strings = {
       added: {{ 'cart.added' | t | json }},
+      discount_invalid: {{ 'cart.discount_invalid' | t | json }},
+      discount_applied: {{ 'cart.discount_applied' | t | json }},
       view_bag: {{ 'cart.view_bag' | t | json }},
       error: {{ 'general.error' | t | json }},
       sold_out: {{ 'products.sold_out' | t | json }},

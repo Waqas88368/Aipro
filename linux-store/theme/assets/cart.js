@@ -112,6 +112,46 @@
     finally { btn && btn.classList.remove('is-loading'); }
   });
 
+  // Discount codes (Shopify Cart AJAX API, 2025: POST /cart/update.js { discount })
+  async function applyDiscount(codes, wrap) {
+    const err = wrap && wrap.querySelector('[data-discount-error]');
+    const btn = wrap && wrap.querySelector('[data-discount-apply]');
+    btn && btn.classList.add('is-loading');
+    try {
+      const cart = await api.update({ discount: codes.join(',') });
+      const bad = (cart.discount_codes || []).filter((c) => !c.applicable).map((c) => c.code);
+      if (bad.length) await api.update({ discount: (cart.discount_codes || []).filter((c) => c.applicable).map((c) => c.code).join(',') });
+      await refresh(); // re-renders the footer, so surface the message on the fresh node
+      const scope = wrap && wrap.closest('[data-drawer], [data-cart-page]');
+      const freshErr = (scope || document).querySelector('[data-discount-error]');
+      if (freshErr) {
+        if (bad.length) { freshErr.textContent = (strings.discount_invalid || 'Code not valid') + ': ' + bad.join(', '); freshErr.hidden = false; }
+        else freshErr.hidden = true;
+      }
+      if (!bad.length) L.toast(strings.discount_applied || 'Applied');
+      L.buzz();
+    } catch (e) { if (err) { err.textContent = e.message || strings.error; err.hidden = false; } }
+    finally { btn && btn.classList.remove('is-loading'); }
+  }
+  function currentCodes(wrap) { return Array.from(wrap.querySelectorAll('[data-discount-remove]')).map((b) => b.dataset.discountRemove); }
+  document.addEventListener('click', (e) => {
+    const apply = e.target.closest('[data-discount-apply]');
+    const remove = e.target.closest('[data-discount-remove]');
+    if (!apply && !remove) return;
+    const wrap = e.target.closest('[data-cart-discount]');
+    if (apply) {
+      const input = wrap.querySelector('[data-discount-input]');
+      const code = (input.value || '').trim().toUpperCase();
+      if (!code) { input.focus(); return; }
+      applyDiscount([...new Set([...currentCodes(wrap), code])], wrap);
+    } else {
+      applyDiscount(currentCodes(wrap).filter((c) => c !== remove.dataset.discountRemove), wrap);
+    }
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && e.target.matches('[data-discount-input]')) { e.preventDefault(); e.target.closest('[data-cart-discount]').querySelector('[data-discount-apply]').click(); }
+  });
+
   // Quick add (cards, upsell)
   document.addEventListener('click', async (e) => {
     const btn = e.target.closest('[data-quick-add]');

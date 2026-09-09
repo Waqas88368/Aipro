@@ -95,7 +95,12 @@ export function registerFilters(engine, store) {
   F('placeholder_svg_tag', (name, cls) => `<svg class="${esc(cls || '')}" viewBox="0 0 525 525" xmlns="http://www.w3.org/2000/svg"><rect width="525" height="525" fill="#0a4a33"/><text x="50%" y="50%" fill="#f4e8d8" font-size="28" text-anchor="middle">${esc(name || 'image')}</text></svg>`);
   F('payment_type_svg_tag', (type) => `<svg class="payment-icon" viewBox="0 0 38 24" width="38" height="24" role="img" aria-label="${esc(type)}"><rect width="38" height="24" rx="4" fill="#f4e8d8" opacity=".9"/><text x="19" y="15" font-size="7" font-family="system-ui" text-anchor="middle" fill="#043222">${esc(String(type).replace(/_/g, ' ').slice(0, 10))}</text></svg>`);
   F('payment_type_img_url', () => '');
-  F('within', (url, collection) => (collection?.handle && collection.handle !== 'all' ? `/collections/${collection.handle}${url}` : url));
+  F('within', function (url, collection) {
+    if (!collection?.handle || collection.handle === 'all') return url;
+    // Shopify: /ar/products/x within collection → /ar/collections/c/products/x
+    const m = String(url).match(/^(\/[a-z]{2}(?:-[A-Za-z]{2})?)?(\/products\/.*)$/);
+    return m ? `${m[1] || ''}/collections/${collection.handle}${m[2]}` : url;
+  });
   F('link_to', (text, url, title) => `<a href="${esc(url)}"${title ? ` title="${esc(title)}"` : ''}>${text}</a>`);
   F('link_to_tag', (label, tag) => `<a href="/collections/all/${encodeURIComponent(tag)}" title="Show tag ${esc(tag)}">${esc(label)}</a>`);
   F('link_to_type', (t) => `<a href="/collections/types?q=${encodeURIComponent(t)}">${esc(t)}</a>`);

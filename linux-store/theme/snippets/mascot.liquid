@@ -1,5 +1,5 @@
 {%- comment -%}
-  Brand penguin. name: classic | skate | skate-spray | hoodie-sit | boombox | astro
+  Brand penguin. name: classic | skate | skate-spray | hoodie-sit | boombox
   width: rendered width in px. Transparent WebP with alpha, so it floats on glass.
 {%- endcomment -%}
 {%- liquid
@@ -18,8 +18,6 @@
       assign ratio = 0.831
     when 'boombox'
       assign ratio = 0.853
-    when 'astro'
-      assign ratio = 0.79
   endcase
   assign h = w | divided_by: ratio | round
 -%}

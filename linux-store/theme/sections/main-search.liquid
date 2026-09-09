@@ -4,7 +4,6 @@
   {%- if is_wishlist -%}
     <header class="collection__head glass" data-reveal>
       <div><p class="eyebrow">{% render 'icon', name: 'heart', px: 12 %} {{ 'wishlist.title' | t }}</p><h1 class="collection__title">{{ 'wishlist.title' | t }}</h1></div>
-      <div class="collection__mascot" aria-hidden="true">{% render 'mascot', name: 'hoodie-sit', width: 150 %}</div>
     </header>
     <div class="product-grid" style="--cols: 4" data-wishlist-grid></div>
     <div class="empty-state glass" data-wishlist-empty hidden>
@@ -39,7 +38,7 @@
           {%- if paginate.pages > 1 -%}<nav class="pagination">{{ paginate | default_pagination }}</nav>{%- endif -%}
         {%- else -%}
           <div class="empty-state glass" style="margin-top:24px">
-            {% render 'mascot', name: 'astro', width: 150 %}
+            {% render 'mascot', name: 'classic', width: 150 %}
             <h2>{{ 'search.empty_title' | t }}</h2>
             <p class="muted">{{ 'search.empty_body' | t }}</p>
             <a href="{{ routes.all_products_collection_url }}" class="btn btn--primary">{{ 'cart.start_shopping' | t }}</a>

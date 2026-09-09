@@ -15,7 +15,6 @@
         <button class="btn btn--primary" type="submit">{{ 'newsletter.button' | t }}{% render 'icon', name: 'arrow-right' %}</button>
       {%- endif -%}
     {%- endform -%}
-    {%- if s.show_mascot -%}<div class="newsletter__mascot" aria-hidden="true">{% render 'mascot', name: 'astro', width: 120 %}</div>{%- endif -%}
   </div>
 </section>
 {% schema %}
@@ -36,12 +35,6 @@
       "type": "textarea",
       "id": "body",
       "label": "Text (blank = translated)"
-    },
-    {
-      "type": "checkbox",
-      "id": "show_mascot",
-      "label": "Show penguin",
-      "default": true
     }
   ],
   "presets": [

@@ -2,37 +2,12 @@
   "sections": {
     "main": {
       "type": "main-customize",
-      "blocks": {
-        "hoodie": {
-          "type": "garment",
-          "settings": {
-            "shape": "hoodie",
-            "fee": 0
-          }
-        },
-        "tee": {
-          "type": "garment",
-          "settings": {
-            "shape": "tee",
-            "fee": 0
-          }
-        },
-        "cap": {
-          "type": "garment",
-          "settings": {
-            "shape": "cap",
-            "fee": 0
-          }
-        }
-      },
-      "block_order": [
-        "hoodie",
-        "tee",
-        "cap"
-      ],
       "settings": {
         "product": "shopify://products/hoodie-customize",
-        "colors": "Forest:#043020,Black:#111111,Cream:#f5f5f0,Beige:#e6d5b8,Burgundy:#6b1e2b,Navy:#1b2a4a"
+        "colors": "Forest:#043020,Black:#111111,Cream:#f4e8d8,Beige:#e6d5b8,White:#f7f7f5,Olive:#4b5d3a",
+        "sizes": "S,M,L,XL,2XL",
+        "min_embroidery": 10,
+        "max_qty": 50
       }
     },
     "faq": {

@@ -30,9 +30,10 @@
           {%- for p in item.properties -%}
             {%- assign first_char = p.first | slice: 0 -%}
             {%- if p.last != blank and first_char != '_' -%}
-              <p class="cart-line__meta">{{ p.first }}:
+              <p class="cart-line__meta">{% render 'property-label', name: p.first %}:
                 {%- if p.last contains '/uploads/' -%} <a href="{{ p.last }}" target="_blank" rel="noopener">{{ 'cart.view_file' | t }}</a>
                 {%- elsif p.last contains 'upload:' -%} {{ p.last | remove_first: 'upload:' }}
+                {%- elsif p.first == 'Method' or p.first == 'Garment' or p.first == 'Colour' -%} {% render 'option-value', value: p.last %}
                 {%- else -%} {{ p.last }}{%- endif -%}
               </p>
             {%- endif -%}

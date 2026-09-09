@@ -25,7 +25,7 @@ html[dir="rtl"] [data-reveal="right"] { transform: translateX(-30px); }
 
 /* ---- Heart pop -------------------------------------------------------------- */
 @keyframes heart-pop { 0% { transform: scale(1); } 35% { transform: scale(1.45); } 60% { transform: scale(.88); } 100% { transform: scale(1); } }
-@keyframes heart-burst { from { box-shadow: 0 0 0 0 rgb(255 143 163 / .7); opacity: 1; } to { box-shadow: 0 0 0 22px rgb(255 143 163 / 0); opacity: 0; } }
+@keyframes heart-burst { from { box-shadow: 0 0 0 0 rgb(143 203 90 / .7); opacity: 1; } to { box-shadow: 0 0 0 22px rgb(143 203 90 / 0); opacity: 0; } }
 [data-wishlist-toggle].is-popping svg { animation: heart-pop .55s var(--spring); }
 .pdp__wish { position: relative; }
 [data-wishlist-toggle]::after { content: ""; position: absolute; inset: 0; border-radius: inherit; opacity: 0; pointer-events: none; }

@@ -10,7 +10,6 @@
       {%- if collection.description != blank -%}<div class="lede collection__desc">{{ collection.description }}</div>{%- endif -%}
       <p class="mono muted collection__count" data-collection-count>{{ 'collections.showing' | t: count: collection.products_count }}</p>
     </div>
-    {%- if s.show_mascot -%}<div class="collection__mascot" aria-hidden="true">{% render 'mascot', name: 'skate', width: 150 %}</div>{%- endif -%}
   </header>
 
   {%- if s.show_tags and collection.all_tags.size > 0 -%}
@@ -130,10 +129,30 @@
 {
   "name": "Collection",
   "settings": [
-    { "type": "range", "id": "per_page", "label": "Products per page", "min": 8, "max": 48, "step": 4, "default": 12 },
-    { "type": "range", "id": "columns", "label": "Columns (desktop)", "min": 3, "max": 5, "step": 1, "default": 4 },
-    { "type": "checkbox", "id": "show_tags", "label": "Show tag chips", "default": true },
-    { "type": "checkbox", "id": "show_mascot", "label": "Show penguin in header", "default": true }
+    {
+      "type": "range",
+      "id": "per_page",
+      "label": "Products per page",
+      "min": 8,
+      "max": 48,
+      "step": 4,
+      "default": 12
+    },
+    {
+      "type": "range",
+      "id": "columns",
+      "label": "Columns (desktop)",
+      "min": 3,
+      "max": 5,
+      "step": 1,
+      "default": 4
+    },
+    {
+      "type": "checkbox",
+      "id": "show_tags",
+      "label": "Show tag chips",
+      "default": true
+    }
   ]
 }
 {% endschema %}

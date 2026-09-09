@@ -150,7 +150,8 @@ engine.registerTag('paginate', {
     const page = Math.max(1, Number(req.query.page || 1));
     const pages = Math.max(1, Math.ceil(items.length / size));
     const slice = items.slice((page - 1) * size, page * size);
-    const urlFor = (p) => { const u = new URL(req.path, 'http://x'); for (const [k, v] of Object.entries(req.query)) if (k !== 'page') u.searchParams.set(k, v); if (p > 1) u.searchParams.set('page', p); return u.pathname + u.search; };
+    const root = (ctx.get(['routes', 'root_url']) || '/').replace(/\/$/, '');
+    const urlFor = (p) => { const u = new URL(root + req.path, 'http://x'); for (const [k, v] of Object.entries(req.query)) if (k !== 'page') u.searchParams.set(k, v); if (p > 1) u.searchParams.set('page', p); return u.pathname + u.search; };
     const parts = [];
     for (let p = 1; p <= pages; p++) {
       if (p === 1 || p === pages || Math.abs(p - page) <= 1) parts.push({ title: String(p), url: urlFor(p), is_link: p !== page });
@@ -271,9 +272,10 @@ function globalsOf(env) {
 function resolveSettings(settings, env) {
   const out = {};
   for (const [k, v] of Object.entries(settings || {})) {
-    if (typeof v === 'string' && /^shopify:\/\/collections\//.test(v)) out[k] = store.collections[v.split('/').pop()] || null;
-    else if (typeof v === 'string' && /^shopify:\/\/products\//.test(v)) out[k] = store.productByHandle(v.split('/').pop()) || null;
+    if (typeof v === 'string' && /^shopify:\/\/collections\//.test(v)) out[k] = env.__lz ? env.__lz(store.collections[v.split('/').pop()] || null) : (store.collections[v.split('/').pop()] || null);
+    else if (typeof v === 'string' && /^shopify:\/\/products\//.test(v)) out[k] = env.__lz ? env.__lz(store.productByHandle(v.split('/').pop()) || null) : (store.productByHandle(v.split('/').pop()) || null);
     else if (typeof v === 'string' && /^shopify:\/\/shop_images\//.test(v)) out[k] = store.imageObject('/assets/' + v.split('/').pop());
+    else if (typeof v === 'string' && /^\/(collections|products|pages|blogs|search|cart|account|policies)(\/|\?|$)/.test(v) && env.routes?.root_url && env.routes.root_url !== '/') out[k] = env.routes.root_url.replace(/\/$/, '') + v; // Shopify localizes url settings
     else out[k] = v;
   }
   return out;
@@ -402,7 +404,7 @@ const server = http.createServer(async (req, res) => {
       return json(res, items.length > 1 ? { items: store.cartJSON().items } : last);
     }
     if (pathname === '/cart/change.js') { const b = await readBody(req); store.cartChange(b.id || b.line, Number(b.quantity)); return json(res, store.cartJSON()); }
-    if (pathname === '/cart/update.js') { const b = nest(await readBody(req)); if (b.updates) for (const [k, q] of Object.entries(b.updates)) store.cartChange(k, Number(q)); if (b.note !== undefined) store.cart.note = b.note; return json(res, store.cartJSON()); }
+    if (pathname === '/cart/update.js') { const b = nest(await readBody(req)); if (b.discount !== undefined) store.setDiscounts(String(b.discount)); if (b.updates) for (const [k, q] of Object.entries(b.updates)) store.cartChange(k, Number(q)); if (b.note !== undefined) store.cart.note = b.note; return json(res, store.cartJSON()); }
     if (pathname === '/cart/clear.js') { store.cartClear(); return json(res, store.cartJSON()); }
     if (pathname === '/cart' && req.method === 'POST') {
       const b = nest(await readBody(req));

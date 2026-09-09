@@ -42,7 +42,12 @@
     const y = window.scrollY;
     if (header) {
       header.classList.toggle('is-compact', y > 48);
-      header.classList.toggle('is-hidden', y > lastY && y > 480 && !doc.body.classList.contains('drawer-open'));
+      // Hide when scrolling down (after a small threshold), reveal immediately on scroll up
+      const goingDown = y > lastY + 2, goingUp = y < lastY - 2;
+      if (goingDown && y > 320 && !doc.body.classList.contains('drawer-open')) header.classList.add('is-hidden');
+      else if (goingUp || y <= 320) header.classList.remove('is-hidden');
+      const zone = header.closest('[data-header-zone]');
+      zone && zone.classList.toggle('is-scrolled', y > 40);
     }
     if (heroMedia && !reduce && y < window.innerHeight) heroMedia.style.transform = `translateY(${(y * 0.22).toFixed(1)}px)`;
     lastY = y; ticking = false;

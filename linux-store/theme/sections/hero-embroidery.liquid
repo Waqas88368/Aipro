@@ -46,12 +46,6 @@
     <div class="hero__vignette"></div>
   </div>
 
-  {%- if s.show_mascot -%}
-    <div class="hero__sticker" aria-hidden="true" data-float data-parallax="-.08">
-      {% render 'mascot', name: s.mascot, width: 200, loading: 'eager' %}
-      {%- if s.chip_1 != blank -%}<span class="chip chip--accent hero__chip">{{ s.chip_1 | escape }}</span>{%- endif -%}
-    </div>
-  {%- endif -%}
 
   <div class="hero__inner wrap">
     <div class="hero__strip glass" data-specular data-reveal>
@@ -124,8 +118,6 @@
     { "type": "text", "id": "trust_1", "label": "Trust 1" },
     { "type": "text", "id": "trust_2", "label": "Trust 2" },
     { "type": "text", "id": "trust_3", "label": "Trust 3" },
-    { "type": "checkbox", "id": "show_mascot", "label": "Show penguin sticker", "default": true },
-    { "type": "select", "id": "mascot", "label": "Penguin", "options": [ { "value": "skate-spray", "label": "Skate + spray" }, { "value": "skate", "label": "Skate" }, { "value": "classic", "label": "Classic" }, { "value": "hoodie-sit", "label": "Hoodie" }, { "value": "boombox", "label": "Boombox" }, { "value": "astro", "label": "Astro" } ], "default": "skate-spray" },
     { "type": "text", "id": "chip_1", "label": "Sticker chip", "default": "FW26" }
   ],
   "presets": [ { "name": "Hero — Embroidery video" } ]

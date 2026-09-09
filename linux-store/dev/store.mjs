@@ -76,7 +76,7 @@ export function buildStore(dataDir) {
   }
 
   // ---- Cart (in-memory, single session) -------------------------------------
-  const cart = { items: [], note: '', attributes: {} };
+  const cart = { items: [], note: '', attributes: {}, discount_codes: [] };
   let customer = null;
 
   const shop = {
@@ -111,8 +111,23 @@ export function buildStore(dataDir) {
         cart_clear_url: `${root}/cart/clear`, cart_update_url: `${root}/cart/update`, collections_url: `${root}/collections`, search_url: `${root}/search`,
         predictive_search_url: `${root}/search/suggest`, product_recommendations_url: `${root}/recommendations/products`,
       };
+      // Shopify emits every object URL under the locale root (/ar/products/…); mirror that here.
+      const L = (v, depth = 0) => {
+        if (!root || depth > 6) return v;
+        if (Array.isArray(v)) return v.map((x) => L(x, depth + 1));
+        if (v && typeof v === 'object') {
+          const o = {};
+          for (const [k, val] of Object.entries(v)) {
+            if ((k === 'url' || k === 'customer_url') && typeof val === 'string' && val.startsWith('/') && !val.startsWith(root + '/') && val !== root && !val.startsWith('/assets/') && !val.startsWith('/cdn/')) o[k] = root + val;
+            else o[k] = L(val, depth + 1);
+          }
+          return o;
+        }
+        return v;
+      };
+      const lz = (x) => L(x);
       return {
-        shop, settings, routes, cart: this.cartObject(), customer, linklists, collections, all_products: byHandle, pages, blogs, images: {},
+        shop: lz(shop), settings, routes, cart: lz(this.cartObject()), customer: lz(customer), linklists: lz(linklists), collections: lz(collections), all_products: lz(byHandle), pages: lz(pages), blogs: lz(blogs), images: {},
         request: { locale: localeObj, path: reqPath, query, host: 'localhost', design_mode: false, visual_preview_mode: false, page_type: 'index', origin: 'http://localhost:3000' },
         localization: {
           available_languages: shop.published_locales.map((l) => ({ ...l, primary: l.primary })), language: localeObj,
@@ -121,12 +136,12 @@ export function buildStore(dataDir) {
         },
         canonical_url: `https://linux-eg.com${reqPath}`, content_for_header: '<!-- content_for_header (mock) -->', powered_by_link: '', current_tags: null, current_page: Number(query.page || 1),
         template: { name: 'index', suffix: null, directory: null }, page_title: 'LINUX', page_description: shop.description,
-        __locale: locale, __cookies: cookies,
+        __locale: locale, __cookies: cookies, __lz: lz,
       };
     },
 
     route(p, query, env) {
-      const set = (name, extra = {}, suffix = null) => ({ template: suffix ? `${name}.${suffix}` : name, env: { ...extra, template: { name: name.replace(/^customers\//, ''), suffix, directory: name.startsWith('customers/') ? 'customers' : null }, request: { ...env.request, page_type: name } } });
+      const set = (name, extra = {}, suffix = null) => ({ template: suffix ? `${name}.${suffix}` : name, env: { ...(env.__lz ? env.__lz(extra) : extra), template: { name: name.replace(/^customers\//, ''), suffix, directory: name.startsWith('customers/') ? 'customers' : null }, request: { ...env.request, page_type: name } } });
       if (p === '/' || p === '') return set('index', { page_title: 'LINUX — Cairo streetwear, embroidered' });
       let m;
       if (p === '/collections' || p === '/collections/') return set('list-collections', { collections, page_title: 'Collections' });
@@ -137,13 +152,15 @@ export function buildStore(dataDir) {
         const view = this.collectionView(c, query, tags);
         return set('collection', { collection: view, current_tags: tags, page_title: c.title });
       }
-      if ((m = p.match(/^\/products\/([^/]+)$/))) {
-        const prod = byHandle[m[1]];
+      // /collections/<c>/products/<p> keeps the collection as breadcrumb context (Shopify behaviour)
+      if ((m = p.match(/^(?:\/collections\/([^/]+))?\/products\/([^/]+)$/))) {
+        const prod = byHandle[m[2]];
         if (!prod) return null;
+        const inColl = m[1] ? collections[m[1]] : null;
         const product = { ...prod };
         if (query.variant) product.selected_variant = prod.variants.find((v) => String(v.id) === query.variant) || null;
         product.selected_or_first_available_variant = product.selected_variant || prod.selected_or_first_available_variant;
-        return set('product', { product, page_title: prod.title, page_description: prod.description.replace(/<[^>]+>/g, '').slice(0, 160), recommendations: { performed: true, products_count: 4, products: this.recommendations(prod.id, 4), intent: 'related' } });
+        return set('product', { product, collection: inColl || undefined, page_title: prod.title, page_description: prod.description.replace(/<[^>]+>/g, '').slice(0, 160), recommendations: { performed: true, products_count: 4, products: this.recommendations(prod.id, 4), intent: 'related' } });
       }
       if (p === '/cart') return set('cart', { page_title: 'Your bag' });
       if (p === '/search') {
@@ -159,6 +176,7 @@ export function buildStore(dataDir) {
       }
       if ((m = p.match(/^\/policies\/([^/]+)$/))) return set('page', { page: page(m[1], m[1].replace(/-/g, ' ').replace(/^\w/, (c) => c.toUpperCase()), '<p>Policy text is managed from Shopify Settings → Policies.</p>'), page_title: 'Policy' });
       if ((m = p.match(/^\/blogs\/([^/]+)$/))) { const b = blogs[m[1]]; return b ? set('blog', { blog: b, page_title: b.title }) : null; }
+      if ((m = p.match(/^\/blogs\/([^/]+)\/tagged\/([^/]+)$/))) { const b = blogs[m[1]]; if (!b) return null; const tag = m[2]; const arts = b.articles.filter((a) => a.tags.some((t) => t.toLowerCase().replace(/\s+/g, '-') === tag)); return set('blog', { blog: { ...b, articles: arts, articles_count: arts.length }, current_tags: [tag], page_title: b.title }); }
       if ((m = p.match(/^\/blogs\/([^/]+)\/([^/]+)$/))) { const b = blogs[m[1]]; const a = b?.articles.find((x) => x.handle === m[2]); return a ? set('article', { blog: b, article: a, page_title: a.title }) : null; }
       if (p === '/account/login') return customer ? { ...set('customers/account', { customer }), status: 200 } : set('customers/login', { page_title: 'Sign in' });
       if (p === '/account/register') return set('customers/register', { page_title: 'Create account' });
@@ -249,10 +267,17 @@ export function buildStore(dataDir) {
         variant_options: variant.options, discounts: [], line_level_discount_allocations: [], product_has_only_default_variant: product.has_only_default_variant,
       };
     },
+    setDiscounts(csv) { cart.discount_codes = csv.split(',').map((c) => c.trim().toUpperCase()).filter(Boolean); },
     cartJSON() {
       const items = cart.items.map((l) => this.lineJSON(l));
       const total = items.reduce((s, i) => s + i.final_line_price, 0);
-      return { token: 'mock', note: cart.note, attributes: cart.attributes, original_total_price: total, total_price: total, total_discount: 0, total_weight: 0, item_count: items.reduce((s, i) => s + i.quantity, 0), items, requires_shipping: true, currency: 'EGP', items_subtotal_price: total, cart_level_discount_applications: [] };
+      // Mock discount codes: LINUX10 = 10%, FLOCK = 15%; anything else is kept but flagged applicable:false (Shopify semantics)
+      const RATES = { LINUX10: 0.10, FLOCK: 0.15 };
+      const discount_codes = (cart.discount_codes || []).map((code) => ({ code, applicable: code in RATES }));
+      const rate = discount_codes.reduce((r, c) => r + (RATES[c.code] || 0), 0);
+      const total_discount = Math.round(total * rate);
+      const total_price = total - total_discount;
+      return { token: 'mock', note: cart.note, attributes: cart.attributes, discount_codes, original_total_price: total, total_price, total_discount, total_weight: 0, item_count: items.reduce((s, i) => s + i.quantity, 0), items, requires_shipping: true, currency: 'EGP', items_subtotal_price: total, cart_level_discount_applications: [] };
     },
     cartObject() {
       const j = this.cartJSON();

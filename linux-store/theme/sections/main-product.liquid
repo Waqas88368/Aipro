@@ -109,6 +109,13 @@
             {%- if size_option -%}<p class="small muted pdp__fit">{% render 'icon', name: 'sparkle', px: 14 %} {{ 'products.true_to_size' | t }}</p>{%- endif -%}
           {%- endunless -%}
 
+          {%- for block in section.blocks -%}
+            {%- case block.type -%}
+              {%- when 'fit_finder' -%}{%- if size_option -%}{% render 'fit-finder', block: block, product: product, size_option: size_option %}{%- endif -%}
+              {%- when 'bundle' -%}{% render 'bundle-offer', block: block, product: product, current: current %}
+            {%- endcase -%}
+          {%- endfor -%}
+
           <div class="pdp__stock" data-stock>
             {%- if current.available -%}
               {%- if settings.show_stock_hint and current.inventory_management == 'shopify' and current.inventory_quantity > 0 and current.inventory_quantity <= settings.low_stock -%}
@@ -214,6 +221,18 @@
     { "type": "description", "name": "Description", "limit": 1, "settings": [ { "type": "text", "id": "title", "label": "Title" } ] },
     { "type": "fabric", "name": "Fabric & care", "limit": 1, "settings": [ { "type": "text", "id": "title", "label": "Title" }, { "type": "richtext", "id": "content", "label": "Content" } ] },
     { "type": "shipping", "name": "Shipping & exchange", "limit": 1, "settings": [ { "type": "text", "id": "title", "label": "Title" }, { "type": "richtext", "id": "content", "label": "Content" } ] },
+    { "type": "bundle", "name": "Bundle offer (buy more, save more)", "limit": 1, "settings": [
+      { "type": "paragraph", "content": "Create matching automatic discounts in Admin → Discounts (e.g. Buy 2 get 10% off). This block only shows the tiers and sets the quantity." },
+      { "type": "text", "id": "title", "label": "Title (blank = translated)" },
+      { "type": "text", "id": "subtitle", "label": "Subtitle (blank = translated)" },
+      { "type": "range", "id": "tier1_qty", "label": "Tier 1 quantity", "min": 2, "max": 6, "step": 1, "default": 2 },
+      { "type": "range", "id": "tier1_pct", "label": "Tier 1 discount %", "min": 5, "max": 50, "step": 5, "default": 10 },
+      { "type": "range", "id": "tier2_qty", "label": "Tier 2 quantity", "min": 2, "max": 8, "step": 1, "default": 3 },
+      { "type": "range", "id": "tier2_pct", "label": "Tier 2 discount %", "min": 5, "max": 50, "step": 5, "default": 15 },
+      { "type": "range", "id": "tier3_qty", "label": "Tier 3 quantity (0 = hide)", "min": 0, "max": 10, "step": 1, "default": 0 },
+      { "type": "range", "id": "tier3_pct", "label": "Tier 3 discount %", "min": 5, "max": 50, "step": 5, "default": 20 }
+    ] },
+    { "type": "fit_finder", "name": "Find your size", "limit": 1, "settings": [ { "type": "text", "id": "title", "label": "Title (blank = translated)" } ] },
     { "type": "custom", "name": "Custom accordion", "settings": [ { "type": "text", "id": "title", "label": "Title", "default": "Details" }, { "type": "richtext", "id": "content", "label": "Content" } ] }
   ]
 }
