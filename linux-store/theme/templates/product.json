@@ -3,15 +3,44 @@
     "main": {
       "type": "main-product",
       "blocks": {
-        "desc": { "type": "description", "settings": {} },
-        "fabric": { "type": "fabric", "settings": {} },
-        "ship": { "type": "shipping", "settings": {} }
+        "desc": {
+          "type": "description",
+          "settings": {}
+        },
+        "fabric": {
+          "type": "fabric",
+          "settings": {}
+        },
+        "ship": {
+          "type": "shipping",
+          "settings": {}
+        }
       },
-      "block_order": ["desc", "fabric", "ship"],
-      "settings": { "show_breadcrumb": true, "show_rating": true, "rating_text": "4.9 · 120 reviews" }
+      "block_order": [
+        "desc",
+        "fabric",
+        "ship"
+      ],
+      "settings": {
+        "show_breadcrumb": true,
+        "show_rating": true,
+        "rating_text": "4.9 · 120 reviews"
+      }
     },
-    "related": { "type": "product-recommendations", "settings": { "heading": "Complete the look", "limit": 4 } },
-    "recent": { "type": "recently-viewed", "settings": {} }
+    "related": {
+      "type": "product-recommendations",
+      "settings": {
+        "limit": 4
+      }
+    },
+    "recent": {
+      "type": "recently-viewed",
+      "settings": {}
+    }
   },
-  "order": ["main", "related", "recent"]
+  "order": [
+    "main",
+    "related",
+    "recent"
+  ]
 }

@@ -7,7 +7,7 @@
     <div class="footer__top">
       <div class="footer__brand">
         <a href="{{ routes.root_url }}" aria-label="{{ shop.name | escape }}">{% render 'brand-logo', height: 28 %}</a>
-        {%- if s.tagline != blank -%}<p class="footer__tagline">{{ s.tagline }}</p>{%- endif -%}
+        <p class="footer__tagline">{% render 'tr', value: s.tagline, key: 'home.footer_tagline' %}</p>
         <div class="footer__social">
           {%- if settings.social_instagram != blank -%}<a href="{{ settings.social_instagram }}" class="icon-btn" target="_blank" rel="noopener" aria-label="Instagram">{% render 'icon', name: 'instagram' %}</a>{%- endif -%}
           {%- if settings.social_tiktok != blank -%}<a href="{{ settings.social_tiktok }}" class="icon-btn" target="_blank" rel="noopener" aria-label="TikTok">{% render 'icon', name: 'tiktok' %}</a>{%- endif -%}
@@ -33,8 +33,8 @@
         {%- assign menu = linklists[block.settings.menu] -%}
         {%- if menu.links.size > 0 -%}
           <div class="footer__col" {{ block.shopify_attributes }}>
-            <h4>{{ block.settings.title | default: menu.title }}</h4>
-            <ul>{%- for link in menu.links -%}<li><a href="{{ link.url }}">{{ link.title }}</a></li>{%- endfor -%}</ul>
+            <h4>{%- if block.settings.title != blank -%}{{ block.settings.title }}{%- else -%}{% render 'menu-title', title: menu.title %}{%- endif -%}</h4>
+            <ul>{%- for link in menu.links -%}<li><a href="{{ link.url }}">{% render 'menu-title', title: link.title %}</a></li>{%- endfor -%}</ul>
           </div>
         {%- endif -%}
       {%- endfor -%}
@@ -42,7 +42,7 @@
     <div class="footer__bottom">
       <p>&copy; {{ 'now' | date: '%Y' }} {{ shop.name }} · {{ 'footer.made_in' | t }}</p>
       <div class="footer__policies">
-        {%- for policy in shop.policies -%}{%- if policy.title != blank -%}<a href="{{ policy.url }}">{{ policy.title }}</a>{%- endif -%}{%- endfor -%}
+        {%- for policy in shop.policies -%}{%- if policy.title != blank -%}<a href="{{ policy.url }}">{% render 'menu-title', title: policy.title %}</a>{%- endif -%}{%- endfor -%}
       </div>
       {%- if s.show_payment_icons -%}
         <div class="payment-icons" aria-label="{{ 'footer.payment' | t }}">
@@ -57,16 +57,48 @@
 {
   "name": "Footer",
   "settings": [
-    { "type": "textarea", "id": "tagline", "label": "Tagline", "default": "Cairo streetwear. Embroidered, not printed. Built to outlive the trend." },
-    { "type": "checkbox", "id": "show_newsletter", "label": "Show newsletter", "default": true },
-    { "type": "checkbox", "id": "show_payment_icons", "label": "Show payment icons", "default": true },
-    { "type": "checkbox", "id": "show_mascot", "label": "Show penguin", "default": true }
+    {
+      "type": "textarea",
+      "id": "tagline",
+      "label": "Tagline (blank = translated)"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_newsletter",
+      "label": "Show newsletter",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_payment_icons",
+      "label": "Show payment icons",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_mascot",
+      "label": "Show penguin",
+      "default": true
+    }
   ],
   "blocks": [
-    { "type": "menu", "name": "Link column", "limit": 3, "settings": [
-      { "type": "text", "id": "title", "label": "Title" },
-      { "type": "link_list", "id": "menu", "label": "Menu" }
-    ] }
+    {
+      "type": "menu",
+      "name": "Link column",
+      "limit": 3,
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title"
+        },
+        {
+          "type": "link_list",
+          "id": "menu",
+          "label": "Menu"
+        }
+      ]
+    }
   ]
 }
 {% endschema %}

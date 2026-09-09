@@ -16,7 +16,11 @@
 
   function paintCount(n) {
     document.querySelectorAll('[data-cart-count]').forEach((el) => {
-      if (el.textContent !== String(n)) el.textContent = n;
+      if (el.textContent !== String(n)) {
+        const grew = Number(el.textContent) < n;
+        el.textContent = n;
+        if (grew && el.classList.contains('badge')) { el.classList.remove('is-bump'); void el.offsetWidth; el.classList.add('is-bump'); }
+      }
       if (el.classList.contains('badge')) el.hidden = n === 0;
     });
   }
@@ -66,6 +70,16 @@
     }
   }
 
+  // Brief ✓ on the button that triggered an add
+  function flashSuccess(btn) {
+    if (!btn) return;
+    const label = btn.querySelector('[data-atc-text]');
+    const prev = label ? label.textContent : null;
+    btn.classList.add('is-success');
+    if (label) label.innerHTML = '<span class="btn__check">✓</span> ' + (strings.added || '');
+    setTimeout(() => { btn.classList.remove('is-success'); if (label && prev != null) label.textContent = prev; }, 1400);
+  }
+
   // Product forms (PDP, quick view, customize)
   document.addEventListener('submit', async (e) => {
     const form = e.target.closest('form[data-product-form]');
@@ -93,6 +107,7 @@
         for (const [k, v] of fd.entries()) { const m = k.match(/^properties\[(.+)\]$/); if (m && typeof v === 'string' && v) properties[m[1]] = v; }
         await add([{ id, quantity, properties }], { image: form.dataset.image });
       }
+      flashSuccess(btn);
     } catch (err) { if (!err.__toasted) L.toast(err.message || strings.error, { type: 'error' }); }
     finally { btn && btn.classList.remove('is-loading'); }
   });

@@ -51,7 +51,7 @@
   endfor
   assign alt_image = product.images[1]
 -%}
-<article class="card glass glass--hover" data-product-card data-handle="{{ product.handle }}" data-reveal style="--i: {{ index | default: 0 | modulo: 4 }}">
+<article class="card glass glass--hover" data-tilt data-product-card data-handle="{{ product.handle }}" data-reveal style="--i: {{ index | default: 0 | modulo: 4 }}">
   <div class="card__media">
     <a href="{{ url }}" tabindex="-1" aria-hidden="true">
       {%- if product.featured_image -%}
@@ -76,7 +76,7 @@
         {%- if product.has_only_default_variant -%}
           <button class="btn btn--cream btn--sm btn--block" type="button" data-quick-add="{{ product.first_available_variant.id }}">{% render 'icon', name: 'plus', px: 16 %}{{ 'products.quick_add' | t }}</button>
         {%- else -%}
-          <span class="card__quick-title">{{ 'products.quick_add' | t }} · {{ size_option.name }}</span>
+          <span class="card__quick-title">{{ 'products.quick_add' | t }} · {% render 'option-name', name: size_option.name %}</span>
           <div class="card__sizes">
             {%- for value in size_option.values -%}
               {%- liquid
@@ -114,11 +114,11 @@
     {%- endif -%}
   </div>
   <div class="card__body">
-    <h3 class="card__title"><a href="{{ url }}">{{ product.title }}</a></h3>
-    <p class="card__meta">{{ product.type }}</p>
+    <h3 class="card__title"><a href="{{ url }}">{% render 'product-title', title: product.title %}</a></h3>
+    <p class="card__meta">{% render 'option-value', value: product.type %}</p>
     <div class="card__price">{% render 'price', product: product %}</div>
     {%- if color_option and color_option.values.size > 1 -%}
-      <div class="card__swatches" aria-label="{{ color_option.name }}">
+      <div class="card__swatches" aria-label="{% render 'option-name', name: color_option.name %}">
         {%- for value in color_option.values limit: 5 -%}
           {% render 'swatch', value: value, small: true %}
         {%- endfor -%}

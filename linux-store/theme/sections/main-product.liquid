@@ -13,10 +13,10 @@
 -%}
 <section class="pdp wrap" id="pdp-{{ section.id }}" data-product data-product-handle="{{ product.handle }}" data-section-id="{{ section.id }}">
   {%- if s.show_breadcrumb -%}
-    <nav class="crumbs pdp__crumbs" aria-label="Breadcrumb">
+    <nav class="crumbs pdp__crumbs" aria-label="{{ 'general.breadcrumb' | t }}">
       <a href="{{ routes.root_url }}">{{ 'nav.home' | t }}</a>{% render 'icon', name: 'chevron-right', px: 12 %}
-      {%- if collection -%}<a href="{{ collection.url }}">{{ collection.title }}</a>{% render 'icon', name: 'chevron-right', px: 12 %}{%- endif -%}
-      <span aria-current="page">{{ product.title }}</span>
+      {%- if collection -%}<a href="{{ collection.url }}">{% render 'menu-title', title: collection.title %}</a>{% render 'icon', name: 'chevron-right', px: 12 %}{%- endif -%}
+      <span aria-current="page">{% render 'product-title', title: product.title %}</span>
     </nav>
   {%- endif -%}
 
@@ -65,8 +65,8 @@
     <div class="pdp__info">
       <div class="pdp__panel glass" data-specular>
         <div class="pdp__head">
-          <p class="card__meta">{{ product.vendor }} · {{ product.type }}</p>
-          <h1 class="pdp__title">{{ product.title }}</h1>
+          <p class="card__meta">{{ product.vendor }} · {% render 'option-value', value: product.type %}</p>
+          <h1 class="pdp__title">{% render 'product-title', title: product.title %}</h1>
           <div class="pdp__price-row">
             <div class="pdp__price" data-price-wrap>{% render 'price', variant: current, product: product, class: 'price--lg' %}</div>
             {%- if s.show_rating -%}<span class="pdp__rating">{% render 'icon', name: 'star', px: 14 %} {{ s.rating_text }}</span>{%- endif -%}
@@ -90,8 +90,8 @@
               -%}
               <fieldset class="pdp__option" data-option-index="{{ forloop.index0 }}">
                 <legend class="pdp__option-label">
-                  <span>{{ option.name }}</span>
-                  <strong data-option-value="{{ forloop.index0 }}">{{ option.selected_value }}</strong>
+                  <span>{% render 'option-name', name: option.name %}</span>
+                  <strong data-option-value="{{ forloop.index0 }}">{% render 'option-value', value: option.selected_value %}</strong>
                   {%- if is_size and settings.show_size_guide -%}
                     <button class="pdp__size-guide" type="button" data-drawer-open="size-guide">{% render 'icon', name: 'ruler', px: 14 %}{{ 'products.size_guide' | t }}</button>
                   {%- endif -%}
@@ -100,7 +100,7 @@
                   {%- for value in option.values -%}
                     <label class="pill{% if is_color %} swatch pill--swatch{% endif %}" {% if is_color %}style="--swatch: {% render 'swatch-color', value: value %}"{% endif %} title="{{ value | escape }}">
                       <input type="radio" name="option{{ option.position }}" value="{{ value | escape }}" data-option-input="{{ option.position | minus: 1 }}" {% if option.selected_value == value %}checked{% endif %}>
-                      {%- unless is_color -%}{{ value }}{%- else -%}<span class="visually-hidden">{{ value }}</span>{%- endunless -%}
+                      {%- unless is_color -%}{% render 'option-value', value: value %}{%- else -%}<span class="visually-hidden">{% render 'option-value', value: value %}</span>{%- endunless -%}
                     </label>
                   {%- endfor -%}
                 </div>
@@ -180,6 +180,7 @@
   </div>
 
   {%- comment -%} ---------- Variant data for product.js ---------- {%- endcomment -%}
+  <script type="application/json" data-option-labels>{ {%- for option in product.options_with_values -%}{%- for value in option.values -%}{%- capture lv -%}{% render 'option-value', value: value %}{%- endcapture -%}{{ value | json }}: {{ lv | strip | json }}{%- unless forloop.last -%},{%- endunless -%}{%- endfor -%}{%- unless forloop.last -%},{%- endunless -%}{%- endfor -%} }</script>
   <script type="application/json" data-variants>{{ product.variants | json }}</script>
   <script type="application/json" data-product-json>{"id":{{ product.id }},"handle":{{ product.handle | json }},"title":{{ product.title | json }},"url":{{ product.url | json }},"image":{{ product.featured_image | image_url: width: 400 | json }},"price":{{ product.price }},"type":{{ product.type | json }},"lowStock":{{ settings.low_stock | default: 5 }},"strings":{"lowStock":{{ 'products.low_stock' | t: count: '[count]' | json }},"inStock":{{ 'products.in_stock' | t | json }},"soldOut":{{ 'products.sold_out' | t | json }},"unavailable":{{ 'products.unavailable' | t | json }},"addToBag":{{ 'products.add_to_bag' | t | json }}}}</script>
 </section>
@@ -187,7 +188,7 @@
 {%- if settings.show_sticky_atc -%}
   <div class="sticky-atc glass glass--solid" data-sticky-atc aria-hidden="true">
     <img src="{{ product.featured_image | image_url: width: 120 }}" alt="" width="44" height="54">
-    <div class="sticky-atc__text"><strong>{{ product.title }}</strong><span data-sticky-price>{{ current.price | money }}</span></div>
+    <div class="sticky-atc__text"><strong>{% render 'product-title', title: product.title %}</strong><span data-sticky-price>{{ current.price | money }}</span></div>
     <button class="btn btn--primary" type="button" data-sticky-submit>{{ 'products.add_to_bag' | t }}</button>
   </div>
 {%- endif -%}

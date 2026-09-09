@@ -1,0 +1,11 @@
+{%- comment -%}
+  Menu/link title with automatic translation. Shopify only translates menu
+  titles through Translate & Adapt; until the merchant does that, common
+  labels fall back to nav.menu.* in the locale file. Anything unknown (or
+  already translated in Shopify) renders as-is.
+  Usage: {% render 'menu-title', title: link.title %}
+{%- endcomment -%}
+{%- assign k = title | downcase | strip | replace: '&amp;', 'and' | replace: '&', 'and' | replace: ' ', '_' | replace: '-', '_' -%}
+{%- assign key = 'nav.menu.' | append: k -%}
+{%- assign out = key | t -%}
+{%- if out contains 'translation missing' -%}{{ title }}{%- else -%}{{ out }}{%- endif -%}

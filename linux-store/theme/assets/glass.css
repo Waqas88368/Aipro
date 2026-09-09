@@ -68,8 +68,8 @@
   --r-inner: calc(var(--r-lg) - var(--pad-card));
 
   /* Type */
-  --font-display: "Archivo", -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI Variable Display", system-ui, sans-serif;
-  --font-body:    "Manrope", -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", system-ui, sans-serif;
+  --font-display: "Unbounded", -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI Variable Display", system-ui, sans-serif;
+  --font-body:    "Space Grotesk", -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", system-ui, sans-serif;
   --font-mono:    "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
   --fs-display: clamp(40px, 6.4vw, 92px);
   --fs-h1: clamp(34px, 4.6vw, 60px);
@@ -97,9 +97,12 @@
 }
 
 html[dir="rtl"] {
-  --font-display: "Alexandria", "Archivo", system-ui, sans-serif;
-  --font-body: "IBM Plex Sans Arabic", "Manrope", system-ui, sans-serif;
+  --font-display: "Cairo", "Unbounded", system-ui, sans-serif;
+  --font-body: "Readex Pro", "Space Grotesk", system-ui, sans-serif;
   --tracking-label: 0;
+  --fs-display: clamp(36px, 5.6vw, 80px);
+  --fs-h1: clamp(30px, 4vw, 54px);
+  --fs-h2: clamp(26px, 3vw, 40px);
 }
 
 /* ---- Light scheme (Theme Editor: Cream) ---------------------------------- */

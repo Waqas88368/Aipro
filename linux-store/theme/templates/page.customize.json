@@ -3,23 +3,79 @@
     "main": {
       "type": "main-customize",
       "blocks": {
-        "hoodie": { "type": "garment", "settings": { "shape": "hoodie", "label": "Hoodie", "fee": 0 } },
-        "tee": { "type": "garment", "settings": { "shape": "tee", "label": "Tee", "fee": 0 } },
-        "cap": { "type": "garment", "settings": { "shape": "cap", "label": "Cap", "fee": 0 } }
+        "hoodie": {
+          "type": "garment",
+          "settings": {
+            "shape": "hoodie",
+            "fee": 0
+          }
+        },
+        "tee": {
+          "type": "garment",
+          "settings": {
+            "shape": "tee",
+            "fee": 0
+          }
+        },
+        "cap": {
+          "type": "garment",
+          "settings": {
+            "shape": "cap",
+            "fee": 0
+          }
+        }
       },
-      "block_order": ["hoodie", "tee", "cap"],
-      "settings": { "product": "shopify://products/hoodie-customize", "eyebrow": "Customize studio", "heading": "Your design. Our thread.", "colors": "Forest:#043020,Black:#111111,Cream:#f5f5f0,Beige:#e6d5b8,Burgundy:#6b1e2b,Navy:#1b2a4a" }
+      "block_order": [
+        "hoodie",
+        "tee",
+        "cap"
+      ],
+      "settings": {
+        "product": "shopify://products/hoodie-customize",
+        "colors": "Forest:#043020,Black:#111111,Cream:#f5f5f0,Beige:#e6d5b8,Burgundy:#6b1e2b,Navy:#1b2a4a"
+      }
     },
     "faq": {
       "type": "faq",
       "blocks": {
-        "q1": { "type": "question", "settings": { "question": "What files work best?", "answer": "<p>High-resolution PNG with a transparent background, or SVG. Keep it under 10 MB.</p>" } },
-        "q2": { "type": "question", "settings": { "question": "How many thread colours?", "answer": "<p>Up to 6 colours per design. We'll match your artwork as closely as thread allows.</p>" } },
-        "q3": { "type": "question", "settings": { "question": "How long does it take?", "answer": "<p>3–5 working days to stitch, then 1–4 days delivery depending on where you are.</p>" } }
+        "q1": {
+          "type": "question",
+          "settings": {
+            "key_q": "home.customize_faq_1_q",
+            "key_a": "home.customize_faq_1_a"
+          }
+        },
+        "q2": {
+          "type": "question",
+          "settings": {
+            "key_q": "home.customize_faq_2_q",
+            "key_a": "home.customize_faq_2_a"
+          }
+        },
+        "q3": {
+          "type": "question",
+          "settings": {
+            "key_q": "home.customize_faq_3_q",
+            "key_a": "home.customize_faq_3_a"
+          }
+        }
       },
-      "block_order": ["q1", "q2", "q3"],
-      "settings": { "eyebrow": "Customize FAQ", "heading": "Good to know", "body": "", "open_first": true, "cta_label": "Ask on WhatsApp", "cta_url": "https://wa.me/201110351549" }
+      "block_order": [
+        "q1",
+        "q2",
+        "q3"
+      ],
+      "settings": {
+        "open_first": true,
+        "cta_url": "https://wa.me/201110351549",
+        "key_eyebrow": "home.customize_eyebrow",
+        "key_heading": "home.customize_faq_title",
+        "key_body": "home.faq_body"
+      }
     }
   },
-  "order": ["main", "faq"]
+  "order": [
+    "main",
+    "faq"
+  ]
 }

@@ -1,0 +1,5 @@
+{%- comment -%} Localized option value: 'black' -> 'أسود' in Arabic; English shows the value capitalized. {%- endcomment -%}
+{%- assign k = value | downcase | strip | replace: ' ', '_' -%}
+{%- assign key = 'products.option_values.' | append: k -%}
+{%- assign out = key | t -%}
+{%- if out contains 'translation missing' -%}{{ value | capitalize }}{%- else -%}{{ out }}{%- endif -%}

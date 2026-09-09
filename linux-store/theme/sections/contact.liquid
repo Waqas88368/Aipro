@@ -1,8 +1,8 @@
 <section class="page wrap">
   <header class="page__head" data-reveal>
     <p class="eyebrow">{{ 'contact.title' | t }}</p>
-    <h1>{%- assign t_title = 'contact.title' | t -%}{{ page.title | default: t_title }}</h1>
-    {%- if page.content != blank -%}<div class="lede" style="text-align:center">{{ page.content }}</div>{%- endif -%}
+    <h1>{{ 'home.contact_heading' | t }}</h1>
+    <div class="lede" style="text-align:center">{%- if page.content != blank -%}{{ page.content }}{%- else -%}{{ 'home.contact_body' | t }}{%- endif -%}</div>
   </header>
   <div class="contact">
     <div class="contact__side">

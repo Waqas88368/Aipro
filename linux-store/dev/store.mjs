@@ -126,7 +126,7 @@ export function buildStore(dataDir) {
     },
 
     route(p, query, env) {
-      const set = (name, extra = {}, suffix = null) => ({ template: suffix ? `${name}.${suffix}` : name, env: { ...extra, template: { name, suffix, directory: name.startsWith('customers/') ? 'customers' : null }, request: { ...env.request, page_type: name } } });
+      const set = (name, extra = {}, suffix = null) => ({ template: suffix ? `${name}.${suffix}` : name, env: { ...extra, template: { name: name.replace(/^customers\//, ''), suffix, directory: name.startsWith('customers/') ? 'customers' : null }, request: { ...env.request, page_type: name } } });
       if (p === '/' || p === '') return set('index', { page_title: 'LINUX — Cairo streetwear, embroidered' });
       let m;
       if (p === '/collections' || p === '/collections/') return set('list-collections', { collections, page_title: 'Collections' });

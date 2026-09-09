@@ -25,8 +25,8 @@
           {%- if item.image -%}<img src="{{ item.image | image_url: width: 200 }}" alt="{{ item.title | escape }}" width="84" height="104" loading="lazy">{%- endif -%}
         </a>
         <div class="cart-line__body">
-          <a class="cart-line__title" href="{{ item.url }}">{{ item.product.title }}</a>
-          {%- unless item.product.has_only_default_variant -%}<p class="cart-line__meta">{{ item.variant.title }}</p>{%- endunless -%}
+          <a class="cart-line__title" href="{{ item.url }}">{% render 'product-title', title: item.product.title %}</a>
+          {%- unless item.product.has_only_default_variant -%}<p class="cart-line__meta">{%- for opt in item.variant.options -%}{% render 'option-value', value: opt %}{%- unless forloop.last %} / {% endunless -%}{%- endfor -%}</p>{%- endunless -%}
           {%- for p in item.properties -%}
             {%- assign first_char = p.first | slice: 0 -%}
             {%- if p.last != blank and first_char != '_' -%}

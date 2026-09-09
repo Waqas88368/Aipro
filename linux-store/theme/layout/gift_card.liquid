@@ -13,9 +13,7 @@
   <meta name="robots" content="noindex">
   <link rel="icon" type="image/png" href="{{ 'favicon-32.png' | asset_url }}">
   <title>{{ shop.name }} &ndash; {{ 'gift_card.title' | t }}</title>
-  {%- unless settings.type_system_fonts -%}
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
-  {%- endunless -%}
+  {%- unless settings.type_system_fonts -%}{% render 'fonts', is_rtl: is_rtl %}{%- endunless -%}
   {{ 'glass.css' | asset_url | stylesheet_tag }}
   {{ 'components.css' | asset_url | stylesheet_tag }}
   {{ 'pages.css' | asset_url | stylesheet_tag }}

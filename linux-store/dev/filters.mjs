@@ -73,6 +73,7 @@ export function registerFilters(engine, store) {
   F('shopify_asset_url', (n) => `https://cdn.shopify.com/shopifycloud/shopify/assets/${n}`);
   F('format_code', (c) => String(c ?? '').replace(/(.{4})(?=.)/g, '$1 '));
   F('global_asset_url', (n) => `https://cdn.shopify.com/s/global/${n}`);
+  F('preload_tag', (url, ...args) => { const h = hashArgs(args); const attrs = Object.entries(h).map(([k, v]) => ` ${k}="${v}"`).join(''); return `<link rel="preload" href="${url}"${attrs}>`; });
   F('stylesheet_tag', (url, ...args) => { const h = hashArgs(args); return `<link href="${url}" rel="stylesheet" type="text/css" media="${h.media || 'all'}"${h.preload ? ' data-preload' : ''}>`; });
   F('script_tag', (url) => `<script src="${url}" type="text/javascript"></script>`);
   F('inline_asset_content', (name) => { const f = path.join(THEME, 'assets', name); return fs.existsSync(f) ? fs.readFileSync(f, 'utf8') : ''; });

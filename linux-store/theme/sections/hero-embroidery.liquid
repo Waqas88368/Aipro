@@ -1,7 +1,9 @@
 {%- comment -%}
-  Hero — the LINUX wordmark being embroidered, shot macro, looping under a
-  Liquid Glass pane. The video ships with the theme (1080p + 720p + poster)
-  so the store looks finished on install; the merchant can swap it.
+  Hero — the LINUX wordmark being embroidered, shot macro. The video IS the
+  hero: it fills the stage edge to edge, and everything else is a slim glass
+  strip pinned to the bottom (headline, CTAs, trust) so the footage stays
+  uncovered. The video ships with the theme (1080p + 720p + poster); the
+  merchant can swap it in the editor.
 {%- endcomment -%}
 {%- liquid
   assign s = section.settings
@@ -9,8 +11,28 @@
   if s.poster != blank
     assign poster = s.poster | image_url: width: 1920
   endif
+  assign heading = s.heading
+  if heading == blank
+    assign heading = 'sections.hero.heading' | t
+  endif
+  assign sub = s.subheading
+  if sub == blank
+    assign sub = 'sections.hero.subheading' | t
+  endif
+  assign cta = s.cta_label
+  if cta == blank
+    assign cta = 'sections.hero.cta' | t
+  endif
+  assign cta2 = s.cta2_label
+  if cta2 == blank
+    assign cta2 = 'sections.hero.cta2' | t
+  endif
+  assign eyebrow = s.eyebrow
+  if eyebrow == blank
+    assign eyebrow = 'sections.hero.eyebrow' | t
+  endif
 -%}
-<section class="hero hero--{{ s.align | default: 'start' }}" id="hero-{{ section.id }}" style="--hero-h: {{ s.height | default: 100 }}svh; --hero-dim: {{ s.overlay | default: 40 | divided_by: 100.0 }};" data-hero>
+<section class="hero hero--wide{% if s.show_headline == false %} hero--quiet{% endif %}" id="hero-{{ section.id }}" style="--hero-h: {{ s.height | default: 100 }}svh; --hero-dim: {{ s.overlay | default: 25 | divided_by: 100.0 }};" data-hero>
   <div class="hero__media" aria-hidden="true" data-hero-media>
     {%- if s.video != blank -%}
       {{ s.video | video_tag: autoplay: true, loop: true, muted: true, controls: false, playsinline: true, preload: 'metadata', class: 'hero__video', poster: poster }}
@@ -21,42 +43,53 @@
       </video>
     {%- endif -%}
     <div class="hero__scrim"></div>
+    <div class="hero__vignette"></div>
   </div>
 
+  {%- if s.show_mascot -%}
+    <div class="hero__sticker" aria-hidden="true" data-float data-parallax="-.08">
+      {% render 'mascot', name: s.mascot, width: 200, loading: 'eager' %}
+      {%- if s.chip_1 != blank -%}<span class="chip chip--accent hero__chip">{{ s.chip_1 | escape }}</span>{%- endif -%}
+    </div>
+  {%- endif -%}
+
   <div class="hero__inner wrap">
-    <div class="hero__pane glass" data-specular data-reveal>
-      {%- if s.eyebrow != blank -%}
-        <p class="eyebrow hero__eyebrow">{{ s.eyebrow | escape }}</p>
-      {%- endif -%}
-      <h1 class="hero__title display">
-        {%- if s.heading != blank -%}{{ s.heading }}{%- else -%}{% render 'brand-logo', class: 'hero__mark', height: 72 %}{%- endif -%}
-      </h1>
-      {%- if s.subheading != blank -%}<p class="hero__sub lede">{{ s.subheading }}</p>{%- endif -%}
-      <div class="hero__cta">
-        {%- if s.cta_label != blank -%}
-          <a href="{{ s.cta_url | default: routes.all_products_collection_url }}" class="btn btn--primary btn--lg" data-magnetic>{{ s.cta_label | escape }}{% render 'icon', name: 'arrow-right' %}</a>
-        {%- endif -%}
-        {%- if s.cta2_label != blank -%}
-          <a href="{{ s.cta2_url | default: routes.collections_url }}" class="btn btn--glass btn--lg" data-magnetic>{{ s.cta2_label | escape }}</a>
-        {%- endif -%}
+    <div class="hero__strip glass" data-specular data-reveal>
+      {%- unless s.show_headline == false -%}
+        <div class="hero__copy">
+          <p class="eyebrow hero__eyebrow"><span class="dot"></span>{{ eyebrow | escape }}</p>
+          <h1 class="hero__title display" data-split>{{ heading | escape }}</h1>
+        </div>
+      {%- endunless -%}
+      <div class="hero__side">
+        <p class="hero__sub">{{ sub | escape }}</p>
+        <div class="hero__cta">
+          <a href="{{ s.cta_url | default: routes.all_products_collection_url }}" class="btn btn--primary btn--lg" data-magnetic>{{ cta | escape }}{% render 'icon', name: 'arrow-right' %}</a>
+          {%- if cta2 != blank -%}<a href="{{ s.cta2_url | default: routes.collections_url }}" class="btn btn--glass btn--lg" data-magnetic>{{ cta2 | escape }}</a>{%- endif -%}
+        </div>
       </div>
-      {%- if s.show_trust -%}
-        <ul class="hero__trust" role="list">
-          <li>{% render 'icon', name: 'truck', px: 18 %}<span>{{ s.trust_1 | escape }}</span></li>
-          <li>{% render 'icon', name: 'return', px: 18 %}<span>{{ s.trust_2 | escape }}</span></li>
-          <li>{% render 'icon', name: 'needle', px: 18 %}<span>{{ s.trust_3 | escape }}</span></li>
-        </ul>
-      {%- endif -%}
     </div>
 
-    {%- if s.show_mascot -%}
-      <div class="hero__side" aria-hidden="true">
-        <div class="hero__mascot glass glass--clear" data-float>
-          {% render 'mascot', name: s.mascot, width: 250, loading: 'eager' %}
-        </div>
-        {%- if s.chip_1 != blank -%}<span class="chip hero__chip hero__chip--a" data-float>{{ s.chip_1 | escape }}</span>{%- endif -%}
-        {%- if s.chip_2 != blank -%}<span class="chip chip--accent hero__chip hero__chip--b" data-float>{{ s.chip_2 | escape }}</span>{%- endif -%}
-      </div>
+    {%- if s.show_trust -%}
+      {%- liquid
+        assign t1 = s.trust_1
+        if t1 == blank
+          assign t1 = 'sections.hero.trust_1' | t
+        endif
+        assign t2 = s.trust_2
+        if t2 == blank
+          assign t2 = 'sections.hero.trust_2' | t
+        endif
+        assign t3 = s.trust_3
+        if t3 == blank
+          assign t3 = 'sections.hero.trust_3' | t
+        endif
+      -%}
+      <ul class="hero__trust" role="list" data-reveal style="--i: 3">
+        <li>{% render 'icon', name: 'truck', px: 16 %}<span>{{ t1 | escape }}</span></li>
+        <li>{% render 'icon', name: 'return', px: 16 %}<span>{{ t2 | escape }}</span></li>
+        <li>{% render 'icon', name: 'needle', px: 16 %}<span>{{ t3 | escape }}</span></li>
+      </ul>
     {%- endif -%}
   </div>
 
@@ -74,26 +107,26 @@
 {
   "name": "Hero — Embroidery video",
   "settings": [
+    { "type": "paragraph", "content": "Text fields left empty fall back to the theme's translations, so the hero switches language automatically." },
     { "type": "video", "id": "video", "label": "Video (defaults to the embroidery loop shipped with the theme)" },
     { "type": "image_picker", "id": "poster", "label": "Poster image" },
     { "type": "range", "id": "height", "label": "Height", "min": 70, "max": 100, "step": 5, "unit": "vh", "default": 100 },
-    { "type": "range", "id": "overlay", "label": "Darken video", "min": 0, "max": 80, "step": 5, "unit": "%", "default": 40 },
-    { "type": "select", "id": "align", "label": "Pane position", "options": [ { "value": "start", "label": "Start" }, { "value": "center", "label": "Center" } ], "default": "start" },
-    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "LINUX · Cairo · FW26" },
-    { "type": "text", "id": "heading", "label": "Heading (leave blank to show the wordmark)", "default": "Stitched in Cairo. Worn everywhere." },
-    { "type": "textarea", "id": "subheading", "label": "Subheading", "default": "Heavyweight streetwear with embroidered details — made to move with you." },
-    { "type": "text", "id": "cta_label", "label": "Primary button", "default": "Shop the drop" },
+    { "type": "range", "id": "overlay", "label": "Darken video", "min": 0, "max": 60, "step": 5, "unit": "%", "default": 25 },
+    { "type": "checkbox", "id": "show_headline", "label": "Show headline over the video", "default": true },
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow" },
+    { "type": "text", "id": "heading", "label": "Headline" },
+    { "type": "textarea", "id": "subheading", "label": "Subheading" },
+    { "type": "text", "id": "cta_label", "label": "Primary button" },
     { "type": "url", "id": "cta_url", "label": "Primary link" },
-    { "type": "text", "id": "cta2_label", "label": "Secondary button", "default": "Customize yours" },
+    { "type": "text", "id": "cta2_label", "label": "Secondary button" },
     { "type": "url", "id": "cta2_url", "label": "Secondary link" },
     { "type": "checkbox", "id": "show_trust", "label": "Show trust row", "default": true },
-    { "type": "text", "id": "trust_1", "label": "Trust 1", "default": "Free shipping over LE 2,000" },
-    { "type": "text", "id": "trust_2", "label": "Trust 2", "default": "14-day easy exchange" },
-    { "type": "text", "id": "trust_3", "label": "Trust 3", "default": "Embroidered, not printed" },
-    { "type": "checkbox", "id": "show_mascot", "label": "Show floating penguin", "default": true },
-    { "type": "select", "id": "mascot", "label": "Penguin", "options": [ { "value": "skate-spray", "label": "Skate + spray" }, { "value": "skate", "label": "Skate" }, { "value": "classic", "label": "Classic" }, { "value": "hoodie-sit", "label": "Hoodie" }, { "value": "boombox", "label": "Boombox" }, { "value": "astro", "label": "Astronaut" } ], "default": "skate-spray" },
-    { "type": "text", "id": "chip_1", "label": "Chip 1", "default": "NEW DROP" },
-    { "type": "text", "id": "chip_2", "label": "Chip 2", "default": "CAIRO · 2026" }
+    { "type": "text", "id": "trust_1", "label": "Trust 1" },
+    { "type": "text", "id": "trust_2", "label": "Trust 2" },
+    { "type": "text", "id": "trust_3", "label": "Trust 3" },
+    { "type": "checkbox", "id": "show_mascot", "label": "Show penguin sticker", "default": true },
+    { "type": "select", "id": "mascot", "label": "Penguin", "options": [ { "value": "skate-spray", "label": "Skate + spray" }, { "value": "skate", "label": "Skate" }, { "value": "classic", "label": "Classic" }, { "value": "hoodie-sit", "label": "Hoodie" }, { "value": "boombox", "label": "Boombox" }, { "value": "astro", "label": "Astro" } ], "default": "skate-spray" },
+    { "type": "text", "id": "chip_1", "label": "Sticker chip", "default": "FW26" }
   ],
   "presets": [ { "name": "Hero — Embroidery video" } ]
 }

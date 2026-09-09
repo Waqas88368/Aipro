@@ -86,6 +86,80 @@
     revealables.forEach((el) => el.classList.add('is-in'));
   }
 
+  /* Split headlines into words so they can rise one by one */
+  doc.querySelectorAll('[data-split]').forEach((el) => {
+    if (el.dataset.splitDone) return;
+    const words = el.textContent.trim().split(/\s+/);
+    el.textContent = '';
+    words.forEach((w, i) => {
+      const outer = doc.createElement('span'); outer.className = 'w'; outer.style.setProperty('--w', i);
+      const inner = doc.createElement('span'); inner.textContent = w;
+      outer.appendChild(inner); el.appendChild(outer);
+      if (i < words.length - 1) el.appendChild(doc.createTextNode(' '));
+    });
+    el.dataset.splitDone = '1';
+    requestAnimationFrame(() => requestAnimationFrame(() => el.classList.add('is-in')));
+  });
+
+  /* Count-up numbers when they scroll into view: <strong data-count>4,000</strong> */
+  if ('IntersectionObserver' in window && !reduce) {
+    const cio = new IntersectionObserver((entries) => entries.forEach((en) => {
+      if (!en.isIntersecting) return;
+      cio.unobserve(en.target);
+      const el = en.target, raw = el.textContent.trim();
+      const m = raw.match(/^([^\d]*)([\d,.]+)(.*)$/);
+      if (!m) return;
+      const target = parseFloat(m[2].replace(/,/g, ''));
+      const decimals = (m[2].split('.')[1] || '').length;
+      const useComma = m[2].includes(',');
+      const t0 = performance.now(), dur = 1200;
+      const fmt = (v) => { let s = v.toFixed(decimals); if (useComma) s = s.replace(/\B(?=(\d{3})+(?!\d))/g, ','); return m[1] + s + m[3]; };
+      const tick = (t) => { const p = Math.min(1, (t - t0) / dur), e = 1 - Math.pow(1 - p, 3); el.textContent = fmt(target * e); if (p < 1) requestAnimationFrame(tick); else el.textContent = raw; };
+      requestAnimationFrame(tick);
+    }), { threshold: 0.4 });
+    doc.querySelectorAll('[data-count]').forEach((el) => cio.observe(el));
+  }
+
+  /* 3D tilt + glare on cards (pointer devices only) */
+  if (fine && !reduce) {
+    let tiltEl = null;
+    doc.addEventListener('pointermove', (e) => {
+      const el = e.target.closest && e.target.closest('[data-tilt]');
+      if (tiltEl && tiltEl !== el) { tiltEl.classList.remove('is-tilting'); tiltEl.style.removeProperty('--rx'); tiltEl.style.removeProperty('--ry'); }
+      tiltEl = el;
+      if (!el) return;
+      const r = el.getBoundingClientRect();
+      const px = (e.clientX - r.left) / r.width, py = (e.clientY - r.top) / r.height;
+      el.classList.add('is-tilting');
+      el.style.setProperty('--ry', ((px - .5) * 8).toFixed(2) + 'deg');
+      el.style.setProperty('--rx', ((.5 - py) * 8).toFixed(2) + 'deg');
+      el.style.setProperty('--gx', (px * 100).toFixed(1) + '%');
+      el.style.setProperty('--gy', (py * 100).toFixed(1) + '%');
+    }, { passive: true });
+    doc.addEventListener('pointerleave', () => { if (tiltEl) { tiltEl.classList.remove('is-tilting'); tiltEl = null; } }, true);
+    doc.addEventListener('pointerout', (e) => {
+      const el = e.target.closest && e.target.closest('[data-tilt]');
+      if (el && !el.contains(e.relatedTarget)) { el.classList.remove('is-tilting'); el.style.removeProperty('--rx'); el.style.removeProperty('--ry'); if (tiltEl === el) tiltEl = null; }
+    });
+  }
+
+  /* Elements with data-parallax drift at their own rate while the hero scrolls */
+  const parallaxEls = doc.querySelectorAll('[data-parallax]');
+  if (parallaxEls.length && !reduce) {
+    addEventListener('scroll', () => {
+      const y = window.scrollY; if (y > window.innerHeight * 1.2) return;
+      parallaxEls.forEach((el) => { el.style.translate = `0 ${(y * parseFloat(el.dataset.parallax || '0.1')).toFixed(1)}px`; });
+    }, { passive: true });
+  }
+
+  /* Intro curtain: removed once its exit animation ends (or immediately on repeat visits) */
+  const curtain = doc.querySelector('.curtain');
+  if (curtain) {
+    const seen = sessionStorage.getItem('linux:curtain');
+    if (seen || reduce) curtain.remove();
+    else { sessionStorage.setItem('linux:curtain', '1'); curtain.addEventListener('animationend', (e) => { if (e.animationName === 'curtain-out') curtain.remove(); }); setTimeout(() => curtain.remove(), 2200); }
+  }
+
   /* Mega menu: keyboard + touch open */
   doc.querySelectorAll('[data-mega]').forEach((item) => {
     const link = item.querySelector('.nav-link');

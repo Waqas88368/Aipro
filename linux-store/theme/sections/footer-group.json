@@ -5,18 +5,38 @@
     "footer": {
       "type": "footer",
       "blocks": {
-        "shop": { "type": "menu", "settings": { "title": "Shop", "menu": "footer-shop" } },
-        "help": { "type": "menu", "settings": { "title": "Help", "menu": "footer-help" } },
-        "about": { "type": "menu", "settings": { "title": "About", "menu": "footer-about" } }
+        "shop": {
+          "type": "menu",
+          "settings": {
+            "menu": "footer-shop"
+          }
+        },
+        "help": {
+          "type": "menu",
+          "settings": {
+            "menu": "footer-help"
+          }
+        },
+        "about": {
+          "type": "menu",
+          "settings": {
+            "menu": "footer-about"
+          }
+        }
       },
-      "block_order": ["shop", "help", "about"],
+      "block_order": [
+        "shop",
+        "help",
+        "about"
+      ],
       "settings": {
-        "tagline": "Cairo streetwear. Embroidered, not printed. Built to outlive the trend.",
         "show_newsletter": true,
         "show_payment_icons": true,
         "show_mascot": true
       }
     }
   },
-  "order": ["footer"]
+  "order": [
+    "footer"
+  ]
 }

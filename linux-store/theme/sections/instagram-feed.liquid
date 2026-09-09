@@ -2,8 +2,8 @@
 <section class="section wrap" id="s-{{ section.id }}">
   <div class="section-head">
     <div class="section-head__text" data-reveal>
-      {%- if s.eyebrow != blank -%}<p class="eyebrow">{{ s.eyebrow }}</p>{%- endif -%}
-      <h2>{{ s.heading }}</h2>
+      <p class="eyebrow">{% render 'tr', value: s.eyebrow, key: 'home.ugc_eyebrow' %}</p>
+      <h2>{% render 'tr', value: s.heading, key: 'home.ugc_heading' %}</h2>
     </div>
     {%- if settings.social_instagram != blank -%}<a href="{{ settings.social_instagram }}" class="btn btn--ghost btn--sm" target="_blank" rel="noopener" data-reveal>{% render 'icon', name: 'instagram', px: 18 %}{{ s.handle }}</a>{%- endif -%}
   </div>
@@ -25,11 +25,66 @@
 {
   "name": "Instagram / UGC",
   "settings": [
-    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Community" },
-    { "type": "text", "id": "heading", "label": "Heading", "default": "Worn in the wild" },
-    { "type": "text", "id": "handle", "label": "Handle", "default": "@linux.eg" }
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow (blank = translated)"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading (blank = translated)"
+    },
+    {
+      "type": "text",
+      "id": "handle",
+      "label": "Handle",
+      "default": "@linux.eg"
+    }
   ],
-  "blocks": [ { "type": "post", "name": "Post", "limit": 6, "settings": [ { "type": "image_picker", "id": "image", "label": "Image" }, { "type": "url", "id": "link", "label": "Link" } ] } ],
-  "presets": [ { "name": "Instagram / UGC", "blocks": [ { "type": "post" }, { "type": "post" }, { "type": "post" }, { "type": "post" }, { "type": "post" }, { "type": "post" } ] } ]
+  "blocks": [
+    {
+      "type": "post",
+      "name": "Post",
+      "limit": 6,
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Link"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Instagram / UGC",
+      "blocks": [
+        {
+          "type": "post"
+        },
+        {
+          "type": "post"
+        },
+        {
+          "type": "post"
+        },
+        {
+          "type": "post"
+        },
+        {
+          "type": "post"
+        },
+        {
+          "type": "post"
+        }
+      ]
+    }
+  ]
 }
 {% endschema %}

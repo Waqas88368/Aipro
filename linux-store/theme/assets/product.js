@@ -16,6 +16,7 @@
     const variants = JSON.parse(rootEl.querySelector('[data-variants]')?.textContent || '[]');
     const meta = JSON.parse(rootEl.querySelector('[data-product-json]')?.textContent || '{}');
     const form = rootEl.querySelector('[data-product-form]');
+    const optionLabels = JSON.parse(rootEl.querySelector('[data-option-labels]')?.textContent || '{}');
     if (!form || !variants.length) return;
     const idInput = form.querySelector('[data-variant-id]');
     const atc = form.querySelector('[data-atc]');
@@ -53,7 +54,7 @@
       const opts = selected();
       const v = find(opts);
       paintAvailability(opts);
-      opts.forEach((val, i) => { const lbl = rootEl.querySelector(`[data-option-value="${i}"]`); if (lbl && val) lbl.textContent = val; });
+      opts.forEach((val, i) => { const lbl = rootEl.querySelector(`[data-option-value="${i}"]`); if (lbl && val) lbl.textContent = optionLabels[val] || val; });
       if (!v) {
         atc.disabled = true; atcText.textContent = meta.strings.unavailable; if (atcPrice) atcPrice.textContent = '';
         if (stock) stock.innerHTML = `<span class="dot dot--off"></span>${meta.strings.unavailable}`;

@@ -18,8 +18,8 @@
 -%}
 <section class="cz wrap" data-customize data-product data-product-handle="{{ p.handle }}">
   <header class="cz__head" data-reveal>
-    <p class="eyebrow">{{ s.eyebrow }}</p>
-    <h1 class="display" style="font-size:clamp(36px,5vw,72px)">{{ s.heading | default: page.title }}</h1>
+    <p class="eyebrow">{% render 'tr', value: s.eyebrow, key: 'home.customize_eyebrow' %}</p>
+    <h1 class="display" style="font-size:clamp(36px,5vw,72px)">{% render 'tr', value: s.heading, key: 'home.customize_heading' %}</h1>
     <p class="lede">{%- assign t_sub = 'customize.subtitle' | t -%}{{ s.subheading | default: t_sub }}</p>
   </header>
 
@@ -70,8 +70,8 @@
         <p class="cz__step-title"><span class="badge">2</span>{{ 'customize.garment' | t }} · {{ 'customize.color' | t }}</p>
         <div class="cz__garments">
           {%- for block in section.blocks -%}
-            {%- if block.type == 'garment' -%}
-              <button class="cz__garment-opt{% if forloop.first %} is-active{% endif %}" type="button" data-cz-garment-opt="{{ block.settings.shape }}" data-fee="{{ block.settings.fee | default: 0 | times: 100 }}" data-label="{{ block.settings.label | escape }}" {{ block.shopify_attributes }}>
+            {%- if block.type == 'garment' -%}{%- assign g_key0 = 'home.garment_' | append: block.settings.shape -%}
+              <button class="cz__garment-opt{% if forloop.first %} is-active{% endif %}" type="button" data-cz-garment-opt="{{ block.settings.shape }}" data-fee="{{ block.settings.fee | default: 0 | times: 100 }}" {%- capture g_label -%}{% render 'tr', value: block.settings.label, key: g_key0 %}{%- endcapture -%}data-label="{{ g_label | strip | escape }}" {{ block.shopify_attributes }}>
                 <svg viewBox="0 0 400 460" aria-hidden="true">
                   {%- case block.settings.shape -%}
                     {%- when 'hoodie' -%}<path d="M120 55 L55 95 L18 175 L80 208 L95 178 L95 430 L305 430 L305 178 L320 208 L382 175 L345 95 L280 55 Q276 20 200 20 Q124 20 120 55 Z" fill="currentColor"/>
@@ -79,7 +79,7 @@
                     {%- else -%}<path d="M120 40 L60 80 L20 160 L80 195 L95 165 L95 430 L305 430 L305 165 L320 195 L380 160 L340 80 L280 40 Q240 75 200 75 Q160 75 120 40 Z" fill="currentColor"/>
                   {%- endcase -%}
                 </svg>
-                <strong>{{ block.settings.label }}</strong>
+                {%- assign g_key = 'home.garment_' | append: block.settings.shape -%}<strong>{% render 'tr', value: block.settings.label, key: g_key %}</strong>
                 <span>{% if block.settings.fee > 0 %}+{{ block.settings.fee | times: 100 | money }}{% else %}—{% endif %}</span>
               </button>
             {%- endif -%}
@@ -108,7 +108,7 @@
           <p class="cz__step-title"><span class="badge">3</span>{{ 'customize.size' | t }}</p>
           {%- for option in p.options_with_values -%}
             <fieldset class="pdp__option" data-option-index="{{ forloop.index0 }}">
-              <legend class="pdp__option-label"><span>{{ option.name }}</span><strong data-option-value="{{ forloop.index0 }}">{{ option.selected_value }}</strong></legend>
+              <legend class="pdp__option-label"><span>{% render 'option-name', name: option.name %}</span><strong data-option-value="{{ forloop.index0 }}">{% render 'option-value', value: option.selected_value %}</strong></legend>
               <div class="pills">
                 {%- for value in option.values -%}
                   <label class="pill"><input type="radio" name="option{{ option.position }}" value="{{ value | escape }}" data-option-input="{{ option.position | minus: 1 }}" {% if option.selected_value == value %}checked{% endif %}>{{ value }}</label>
@@ -144,6 +144,7 @@
     <div class="prop glass" data-reveal style="--i:3"><span class="prop__icon">{% render 'icon', name: 'needle', px: 20 %}</span><strong>{{ 'customize.step_4' | t }}</strong></div>
   </div>
 
+  <script type="application/json" data-option-labels>{ {%- for option in p.options_with_values -%}{%- for value in option.values -%}{%- capture lv -%}{% render 'option-value', value: value %}{%- endcapture -%}{{ value | json }}: {{ lv | strip | json }}{%- unless forloop.last -%},{%- endunless -%}{%- endfor -%}{%- unless forloop.last -%},{%- endunless -%}{%- endfor -%} }</script>
   <script type="application/json" data-variants>{{ p.variants | json }}</script>
   <script type="application/json" data-product-json>{"id":{{ p.id }},"handle":{{ p.handle | json }},"title":{{ p.title | json }},"url":{{ p.url | json }},"price":{{ p.price }},"lowStock":{{ settings.low_stock | default: 5 }},"strings":{"lowStock":{{ 'products.low_stock' | t: count: '[count]' | json }},"inStock":{{ 'customize.step_4' | t | json }},"soldOut":{{ 'products.sold_out' | t | json }},"unavailable":{{ 'products.unavailable' | t | json }},"addToBag":{{ 'customize.add' | t | json }},"needDesign":{{ 'customize.need_design' | t | json }},"fileTooBig":{{ 'customize.file_too_big' | t | json }},"fileType":{{ 'customize.file_type' | t | json }}}}</script>
 </section>
@@ -151,18 +152,71 @@
 {
   "name": "Customize studio",
   "settings": [
-    { "type": "product", "id": "product", "label": "Customize product (variants carry size/colour/price)" },
-    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Customize studio" },
-    { "type": "text", "id": "heading", "label": "Heading", "default": "Your design. Our thread." },
-    { "type": "textarea", "id": "subheading", "label": "Subheading" },
-    { "type": "text", "id": "colors", "label": "Garment colours (Name:#hex, comma-separated)", "default": "Forest:#043020,Black:#111111,Cream:#f5f5f0,Beige:#e6d5b8,Burgundy:#6b1e2b,Navy:#1b2a4a" }
+    {
+      "type": "product",
+      "id": "product",
+      "label": "Customize product (variants carry size/colour/price)"
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading"
+    },
+    {
+      "type": "textarea",
+      "id": "subheading",
+      "label": "Subheading"
+    },
+    {
+      "type": "text",
+      "id": "colors",
+      "label": "Garment colours (Name:#hex, comma-separated)",
+      "default": "Forest:#043020,Black:#111111,Cream:#f5f5f0,Beige:#e6d5b8,Burgundy:#6b1e2b,Navy:#1b2a4a"
+    }
   ],
   "blocks": [
-    { "type": "garment", "name": "Garment", "settings": [
-      { "type": "select", "id": "shape", "label": "Shape", "options": [ { "value": "tee", "label": "T-shirt" }, { "value": "hoodie", "label": "Hoodie" }, { "value": "cap", "label": "Cap" } ], "default": "tee" },
-      { "type": "text", "id": "label", "label": "Label", "default": "Tee" },
-      { "type": "number", "id": "fee", "label": "Extra fee (LE, display only)", "default": 0 }
-    ] }
+    {
+      "type": "garment",
+      "name": "Garment",
+      "settings": [
+        {
+          "type": "select",
+          "id": "shape",
+          "label": "Shape",
+          "options": [
+            {
+              "value": "tee",
+              "label": "T-shirt"
+            },
+            {
+              "value": "hoodie",
+              "label": "Hoodie"
+            },
+            {
+              "value": "cap",
+              "label": "Cap"
+            }
+          ],
+          "default": "tee"
+        },
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Label"
+        },
+        {
+          "type": "number",
+          "id": "fee",
+          "label": "Extra fee (LE, display only)",
+          "default": 0
+        }
+      ]
+    }
   ]
 }
 {% endschema %}

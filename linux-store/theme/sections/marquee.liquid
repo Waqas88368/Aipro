@@ -3,7 +3,7 @@
   <div class="marquee__track">
     {%- for i in (1..3) -%}
       {%- for block in section.blocks -%}
-        <span class="marquee__item" {{ block.shopify_attributes }}>{{ block.settings.text }}{% render 'icon', name: 'sparkle', px: 16 %}</span>
+        <span class="marquee__item" {{ block.shopify_attributes }}>{% render 'tr', value: block.settings.text, key: block.settings.key %}{% render 'icon', name: 'sparkle', px: 16 %}</span>
       {%- endfor -%}
     {%- endfor -%}
   </div>
@@ -12,7 +12,45 @@
 {% schema %}
 {
   "name": "Marquee",
-  "blocks": [ { "type": "item", "name": "Item", "settings": [ { "type": "text", "id": "text", "label": "Text", "default": "Embroidered in Cairo" } ] } ],
-  "presets": [ { "name": "Marquee", "blocks": [ { "type": "item", "settings": { "text": "Free shipping over LE 2,000" } }, { "type": "item", "settings": { "text": "Embroidered, not printed" } }, { "type": "item", "settings": { "text": "14-day easy exchange" } }, { "type": "item", "settings": { "text": "Heavyweight 340gsm melton" } }, { "type": "item", "settings": { "text": "Cash on delivery" } } ] } ]
+  "blocks": [
+    {
+      "type": "item",
+      "name": "Item",
+      "settings": [
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Text"
+        },
+        {
+          "type": "text",
+          "id": "key",
+          "label": "Translation key (e.g. home.marquee_1)"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Marquee",
+      "blocks": [
+        {
+          "type": "item"
+        },
+        {
+          "type": "item"
+        },
+        {
+          "type": "item"
+        },
+        {
+          "type": "item"
+        },
+        {
+          "type": "item"
+        }
+      ]
+    }
+  ]
 }
 {% endschema %}
