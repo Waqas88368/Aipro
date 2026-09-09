@@ -1,0 +1,5 @@
+{%- comment -%} Localized product option name: 'Color' -> 'اللون'. Falls back to the raw name. {%- endcomment -%}
+{%- assign k = name | downcase | strip | replace: ' ', '_' -%}
+{%- assign key = 'products.option_names.' | append: k -%}
+{%- assign out = key | t -%}
+{%- if out contains 'translation missing' -%}{{ name }}{%- else -%}{{ out }}{%- endif -%}

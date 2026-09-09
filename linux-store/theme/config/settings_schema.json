@@ -1,0 +1,225 @@
+[
+  {
+    "name": "theme_info",
+    "theme_name": "LINUX Liquid Glass",
+    "theme_version": "3.0.0",
+    "theme_author": "LINUX",
+    "theme_documentation_url": "https://linux-eg.com",
+    "theme_support_url": "https://wa.me/201110351549"
+  },
+  {
+    "name": "Appearance",
+    "settings": [
+      {
+        "type": "select",
+        "id": "color_scheme",
+        "label": "Scheme",
+        "options": [
+          {
+            "value": "forest",
+            "label": "Forest (dark)"
+          },
+          {
+            "value": "cream",
+            "label": "Cream (light)"
+          }
+        ],
+        "default": "forest"
+      },
+      {
+        "type": "range",
+        "id": "glass_strength",
+        "label": "Glass blur",
+        "min": 50,
+        "max": 150,
+        "step": 10,
+        "unit": "%",
+        "default": 100
+      },
+      {
+        "type": "range",
+        "id": "radius_scale",
+        "label": "Corner roundness",
+        "min": 60,
+        "max": 140,
+        "step": 10,
+        "unit": "%",
+        "default": 100
+      },
+      {
+        "type": "range",
+        "id": "motion_scale",
+        "label": "Motion",
+        "min": 0,
+        "max": 100,
+        "step": 100,
+        "unit": "%",
+        "default": 100,
+        "info": "0 disables all animation"
+      },
+      {
+        "type": "checkbox",
+        "id": "show_curtain",
+        "label": "Logo curtain on first visit (home page)",
+        "default": true
+      },
+      {
+        "type": "range",
+        "id": "page_width",
+        "label": "Page width",
+        "min": 1200,
+        "max": 1680,
+        "step": 40,
+        "unit": "px",
+        "default": 1440
+      },
+      {
+        "type": "checkbox",
+        "id": "type_system_fonts",
+        "label": "Use system fonts (skip Google Fonts)",
+        "default": false
+      },
+      {
+        "type": "image_picker",
+        "id": "favicon",
+        "label": "Favicon"
+      },
+      {
+        "type": "image_picker",
+        "id": "share_image",
+        "label": "Social share image"
+      }
+    ]
+  },
+  {
+    "name": "Navigation",
+    "settings": [
+      {
+        "type": "link_list",
+        "id": "side_menu",
+        "label": "Mobile menu",
+        "default": "main-menu"
+      },
+      {
+        "type": "text",
+        "id": "search_suggestions",
+        "label": "Popular searches (comma separated)",
+        "default": "Hoodie,Anime,Customize,Sada,Shirt"
+      }
+    ]
+  },
+  {
+    "name": "Cart & checkout",
+    "settings": [
+      {
+        "type": "select",
+        "id": "cart_type",
+        "label": "Cart type",
+        "options": [
+          {
+            "value": "drawer",
+            "label": "Drawer"
+          },
+          {
+            "value": "page",
+            "label": "Page"
+          }
+        ],
+        "default": "drawer"
+      },
+      {
+        "type": "number",
+        "id": "free_shipping_threshold",
+        "label": "Free shipping threshold (LE, 0 to hide meter)",
+        "default": 2000
+      },
+      {
+        "type": "checkbox",
+        "id": "show_stock_hint",
+        "label": "Show \"Only X left\" on product pages",
+        "default": true
+      },
+      {
+        "type": "range",
+        "id": "low_stock",
+        "label": "Low stock threshold",
+        "min": 1,
+        "max": 10,
+        "step": 1,
+        "default": 5
+      }
+    ]
+  },
+  {
+    "name": "Product page",
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "show_size_guide",
+        "label": "Show size guide",
+        "default": true
+      },
+      {
+        "type": "page",
+        "id": "size_guide_page",
+        "label": "Size guide page (optional rich content)"
+      },
+      {
+        "type": "checkbox",
+        "id": "show_sticky_atc",
+        "label": "Sticky add-to-bag bar",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "show_recently_viewed",
+        "label": "Recently viewed",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "show_delivery_estimate",
+        "label": "Show delivery estimate",
+        "default": true
+      },
+      {
+        "type": "text",
+        "id": "delivery_cairo",
+        "label": "Delivery: Cairo & Giza",
+        "default": "1–2 days"
+      },
+      {
+        "type": "text",
+        "id": "delivery_egypt",
+        "label": "Delivery: rest of Egypt",
+        "default": "2–4 days"
+      }
+    ]
+  },
+  {
+    "name": "Brand & social",
+    "settings": [
+      {
+        "type": "text",
+        "id": "whatsapp_number",
+        "label": "WhatsApp number (international format)",
+        "default": "201110351549"
+      },
+      {
+        "type": "url",
+        "id": "social_instagram",
+        "label": "Instagram"
+      },
+      {
+        "type": "url",
+        "id": "social_tiktok",
+        "label": "TikTok"
+      },
+      {
+        "type": "url",
+        "id": "social_facebook",
+        "label": "Facebook"
+      }
+    ]
+  }
+]

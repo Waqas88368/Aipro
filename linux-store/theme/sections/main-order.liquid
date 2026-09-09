@@ -1,0 +1,35 @@
+<section class="account wrap">
+  <header class="cart-page__head" data-reveal>
+    <a href="{{ routes.account_url }}" class="btn btn--ghost btn--sm" style="margin-bottom:14px">{% render 'icon', name: 'arrow-left', px: 16 %}{{ 'customer.order.back' | t }}</a>
+    <h1>{{ 'customer.order.title' | t: name: order.name }}</h1>
+    <p class="muted">{%- assign placed_date = order.created_at | date: format: 'month_day_year' -%}{{ 'customer.order.placed' | t: date: placed_date }} · <span class="status status--{{ order.financial_status }}">{{ order.financial_status_label }}</span> <span class="status status--{{ order.fulfillment_status }}">{{ order.fulfillment_status_label }}</span></p>
+  </header>
+  <div class="account__grid">
+    {% render 'account-nav', active: 'orders' %}
+    <div class="account__main">
+      <div class="account__panel glass" data-reveal>
+        <ul class="cart-lines" role="list">
+          {%- for item in order.line_items -%}
+            <li class="cart-line glass glass--clear">
+              <a class="cart-line__media" href="{{ item.url }}">{%- if item.image -%}<img src="{{ item.image | image_url: width: 200 }}" alt="" width="84" height="104">{%- endif -%}</a>
+              <div class="cart-line__body"><strong class="cart-line__title">{{ item.title }}</strong>{%- if item.variant_title -%}<p class="cart-line__meta">{{ item.variant_title }}</p>{%- endif -%}<div class="cart-line__row"><span class="muted small">× {{ item.quantity }}</span><span class="cart-line__price">{{ item.final_line_price | money }}</span></div></div>
+            </li>
+          {%- endfor -%}
+        </ul>
+        <div class="cart-totals" style="margin-top:14px">
+          <div class="cart-totals__row"><span>{{ 'customer.order.subtotal' | t }}</span><span>{{ order.subtotal_price | money }}</span></div>
+          <div class="cart-totals__row"><span>{{ 'customer.order.shipping' | t }}</span><span>{{ order.shipping_price | money }}</span></div>
+          {%- if order.total_discounts > 0 -%}<div class="cart-totals__row"><span>{{ 'customer.order.discount' | t }}</span><span>−{{ order.total_discounts | money }}</span></div>{%- endif -%}
+          <div class="cart-totals__row cart-totals__row--total"><span>{{ 'customer.order.total' | t }}</span><span class="money">{{ order.total_price | money }}</span></div>
+        </div>
+      </div>
+      <div class="contact__row">
+        <div class="account__panel glass" data-reveal style="--i:1"><h3>{{ 'customer.order.shipping_address' | t }}</h3>{{ order.shipping_address | format_address }}</div>
+        <div class="account__panel glass" data-reveal style="--i:2"><h3>{{ 'customer.order.billing' | t }}</h3>{{ order.billing_address | format_address }}</div>
+      </div>
+    </div>
+  </div>
+</section>
+{% schema %}
+{ "name": "Order", "settings": [] }
+{% endschema %}

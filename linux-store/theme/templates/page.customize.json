@@ -1,0 +1,56 @@
+{
+  "sections": {
+    "main": {
+      "type": "main-customize",
+      "settings": {
+        "product": "shopify://products/hoodie-customize",
+        "colors": "Forest:#043020,Black:#111111,Cream:#f4e8d8,Beige:#e6d5b8,White:#f7f7f5,Olive:#4b5d3a",
+        "sizes": "S,M,L,XL,2XL",
+        "min_embroidery": 10,
+        "max_qty": 50
+      }
+    },
+    "faq": {
+      "type": "faq",
+      "blocks": {
+        "q1": {
+          "type": "question",
+          "settings": {
+            "key_q": "home.customize_faq_1_q",
+            "key_a": "home.customize_faq_1_a"
+          }
+        },
+        "q2": {
+          "type": "question",
+          "settings": {
+            "key_q": "home.customize_faq_2_q",
+            "key_a": "home.customize_faq_2_a"
+          }
+        },
+        "q3": {
+          "type": "question",
+          "settings": {
+            "key_q": "home.customize_faq_3_q",
+            "key_a": "home.customize_faq_3_a"
+          }
+        }
+      },
+      "block_order": [
+        "q1",
+        "q2",
+        "q3"
+      ],
+      "settings": {
+        "open_first": true,
+        "cta_url": "https://wa.me/201110351549",
+        "key_eyebrow": "home.customize_eyebrow",
+        "key_heading": "home.customize_faq_title",
+        "key_body": "home.faq_body"
+      }
+    }
+  },
+  "order": [
+    "main",
+    "faq"
+  ]
+}

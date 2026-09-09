@@ -1,0 +1,4 @@
+{%- assign number = settings.whatsapp_number | remove: '+' | remove: ' ' | remove: '-' -%}
+<a class="wa-fab glass glass--solid" href="https://wa.me/{{ number }}?text={{ 'general.whatsapp_prefill' | t | url_encode }}" target="_blank" rel="noopener" aria-label="WhatsApp">
+  {% render 'icon', name: 'whatsapp', px: 22 %}<span>{{ 'general.whatsapp' | t }}</span>
+</a>

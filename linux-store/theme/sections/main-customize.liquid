@@ -1,0 +1,207 @@
+{%- comment -%}
+  Customize studio v2 — hoodie or tee, recolourable 3D-ish mockup, drag/scale
+  artwork, front/back, quantity with a size per piece, method (print from 1 pc,
+  embroidery from 10 pcs), notes, WhatsApp handoff. Everything reaches the order
+  as line-item properties on the merchant's "Customize" product.
+{%- endcomment -%}
+{%- liquid
+  assign s = section.settings
+  assign p = s.product
+  if p == blank
+    assign p = all_products['hoodie-customize']
+  endif
+  if p == blank
+    assign p = collections.all.products.first
+  endif
+  assign current = p.selected_or_first_available_variant
+  assign colors = s.colors | default: 'Forest:#043020,Black:#111111,Cream:#f4e8d8,Beige:#e6d5b8,White:#f7f7f5,Olive:#4b5d3a' | split: ','
+  assign first_color = colors | first | split: ':'
+  assign first_name = first_color | first | strip
+  assign first_hex = first_color | last | strip
+  assign min_emb = s.min_embroidery | default: 10
+  assign sizes = s.sizes | default: 'S,M,L,XL,2XL' | split: ','
+  assign wa = settings.whatsapp_number | remove: '+' | remove: ' '
+-%}
+<section class="cz wrap" data-customize data-product-handle="{{ p.handle }}" data-min-embroidery="{{ min_emb }}" data-max-qty="{{ s.max_qty | default: 50 }}">
+  <header class="cz__head" data-reveal>
+    <p class="eyebrow">{% render 'tr', value: s.eyebrow, key: 'home.customize_eyebrow' %}</p>
+    <h1 class="display" data-split>{% render 'tr', value: s.heading, key: 'home.customize_heading' %}</h1>
+    <p class="lede">{%- assign t_sub = 'customize.subtitle' | t -%}{{ s.subheading | default: t_sub }}</p>
+  </header>
+
+  <div class="cz__grid">
+    {%- comment -%} ---------- Stage ---------- {%- endcomment -%}
+    <div class="cz__stage glass" data-specular data-reveal>
+      <div class="cz__stage-top">
+        <div class="segmented" role="radiogroup" aria-label="{{ 'customize.garment' | t }}">
+          <button class="segmented__btn is-active" type="button" data-cz-garment-opt="hoodie" data-label="{{ 'home.garment_hoodie' | t | escape }}" aria-pressed="true">{% render 'icon', name: 'hoodie', px: 16 %}{{ 'home.garment_hoodie' | t }}</button>
+          <button class="segmented__btn" type="button" data-cz-garment-opt="tee" data-label="{{ 'home.garment_tee' | t | escape }}" aria-pressed="false">{% render 'icon', name: 'shirt', px: 16 %}{{ 'home.garment_tee' | t }}</button>
+        </div>
+        <div class="segmented" role="radiogroup" aria-label="{{ 'customize.side' | t }}">
+          <button class="segmented__btn is-active" type="button" data-cz-side="front" aria-pressed="true">{{ 'customize.front' | t }}</button>
+          <button class="segmented__btn" type="button" data-cz-side="back" aria-pressed="false">{{ 'customize.back' | t }}</button>
+        </div>
+      </div>
+      <div class="cz__canvas" data-cz-canvas>
+        <div class="cz__garment" data-cz-garment style="--gc: {{ first_hex }}">
+          <div class="cz__mock" data-cz-mock="hoodie-front">{% render 'garment-mockup', shape: 'hoodie', side: 'front' %}</div>
+          <div class="cz__mock" data-cz-mock="hoodie-back" hidden>{% render 'garment-mockup', shape: 'hoodie', side: 'back' %}</div>
+          <div class="cz__mock" data-cz-mock="tee-front" hidden>{% render 'garment-mockup', shape: 'tee', side: 'front' %}</div>
+          <div class="cz__mock" data-cz-mock="tee-back" hidden>{% render 'garment-mockup', shape: 'tee', side: 'back' %}</div>
+          <button class="cz__empty glass" type="button" data-cz-pick>{% render 'icon', name: 'upload', px: 22 %}<span>{{ 'customize.upload' | t }}</span></button>
+          <div class="cz__design" data-cz-design hidden>
+            <img alt="{{ 'customize.preview_alt' | t }}" width="400" height="400" data-cz-design-img>
+            <span class="cz__handle" data-cz-handle aria-hidden="true">{% render 'icon', name: 'move', px: 12 %}</span>
+          </div>
+          <div class="cz__print-area" data-cz-area aria-hidden="true"></div>
+        </div>
+      </div>
+      <div class="cz__stage-foot">
+        <p class="cz__hint">{% render 'icon', name: 'move', px: 14 %}{{ 'customize.hint_3d' | t }}</p>
+        <div class="cz__colors" role="radiogroup" aria-label="{{ 'customize.color' | t }}">
+          {%- for c in colors -%}
+            {%- liquid
+              assign parts = c | strip | split: ':'
+              assign c_name = parts[0] | strip
+              assign c_hex = parts | last | strip
+            -%}
+            {%- capture c_label -%}{% render 'option-value', value: c_name %}{%- endcapture -%}{%- assign c_label = c_label | strip -%}
+            <button class="pill swatch{% if forloop.first %} is-active{% endif %}" type="button" style="--swatch: {{ c_hex }}" data-cz-color="{{ c_hex }}" data-cz-color-name="{{ c_name | escape }}" aria-label="{{ c_label | escape }}" aria-pressed="{% if forloop.first %}true{% else %}false{% endif %}" title="{{ c_label | escape }}"></button>
+          {%- endfor -%}
+        </div>
+      </div>
+    </div>
+
+    {%- comment -%} ---------- Panel ---------- {%- endcomment -%}
+    {%- form 'product', p, class: 'cz__panel glass', data-product-form: '', data-cz-form: '' -%}
+      <input type="hidden" name="id" value="{{ current.id }}" data-variant-id>
+      <input type="hidden" name="quantity" value="1" data-cz-qty-field>
+      <input type="hidden" name="properties[Garment]" data-cz-garment-prop value="{{ 'home.garment_hoodie' | t | escape }}">
+      <input type="hidden" name="properties[Colour]" data-cz-color-prop value="{{ first_name | escape }}">
+      <input type="hidden" name="properties[Method]" data-cz-method-prop value="Print">
+      <input type="hidden" name="properties[Sizes]" data-cz-sizes-prop value="">
+      <input type="hidden" name="properties[_Design position]" data-cz-pos value="x:50,y:40,scale:42,side:front">
+
+      <div class="cz__step">
+        <p class="cz__step-title"><span class="badge">1</span>{{ 'customize.upload' | t }}</p>
+        <label class="cz__drop" data-cz-drop>
+          {% render 'icon', name: 'upload', px: 26 %}
+          <strong>{{ 'customize.upload' | t }}</strong>
+          <small>{{ 'customize.upload_hint' | t }}</small>
+          <input type="file" name="properties[Design file]" accept="image/png,image/jpeg,image/svg+xml,image/webp" class="visually-hidden" data-cz-file>
+        </label>
+        <div class="cz__file glass glass--clear" data-cz-file-row hidden>
+          <img alt="" width="48" height="48" data-cz-thumb><div><strong data-cz-filename></strong><small class="muted" data-cz-filesize></small></div>
+          <button class="btn btn--ghost btn--sm" type="button" data-cz-remove>{{ 'customize.remove' | t }}</button>
+        </div>
+        <p class="form-error" data-cz-error hidden></p>
+      </div>
+
+      <div class="cz__step">
+        <p class="cz__step-title"><span class="badge">2</span>{{ 'customize.method' | t }}</p>
+        <div class="cz__methods" role="radiogroup">
+          <button class="cz__method is-active" type="button" data-cz-method="Print" data-min="1" aria-pressed="true">
+            <span class="cz__method-icon">{% render 'icon', name: 'layers', px: 18 %}</span>
+            <strong>{{ 'customize.method_print' | t }}</strong>
+            <small>{{ 'customize.print_note' | t }}</small>
+          </button>
+          <button class="cz__method" type="button" data-cz-method="Embroidery" data-min="{{ min_emb }}" aria-pressed="false">
+            <span class="cz__method-icon">{% render 'icon', name: 'needle', px: 18 %}</span>
+            <strong>{{ 'customize.method_embroidery' | t }}</strong>
+            <small>{{ 'customize.min_embroidery_short' | t: count: min_emb }}</small>
+          </button>
+        </div>
+        <p class="cz__notice glass glass--clear" data-cz-min-notice hidden>{% render 'icon', name: 'info', px: 16 %}<span>{{ 'customize.min_embroidery' | t: count: min_emb }}</span></p>
+      </div>
+
+      <div class="cz__step">
+        <p class="cz__step-title"><span class="badge">3</span>{{ 'customize.quantity' | t }}</p>
+        <div class="cz__qty-row">
+          <div class="qty">
+            <button class="qty__btn" type="button" data-cz-qty-step="-1" aria-label="{{ 'cart.decrease' | t }}">−</button>
+            <input class="qty__input" type="number" inputmode="numeric" min="1" value="1" data-cz-qty aria-label="{{ 'customize.quantity' | t }}">
+            <button class="qty__btn" type="button" data-cz-qty-step="1" aria-label="{{ 'cart.increase' | t }}">+</button>
+          </div>
+          <div class="cz__qty-quick">
+            {%- assign quick_qtys = '1,5,10,20' | split: ',' -%}{%- for qq in quick_qtys -%}<button class="chip" type="button" data-cz-qty-set="{{ qq }}">{{ qq }}</button>{%- endfor -%}
+          </div>
+        </div>
+        <div class="cz__sizes" data-cz-sizes>
+          <p class="cz__sizes-title">{{ 'customize.sizes_title' | t }}</p>
+          <div class="cz__sizes-list" data-cz-sizes-list></div>
+        </div>
+        <template data-cz-size-row>
+          <div class="cz__size-row">
+            <span class="cz__size-n"></span>
+            <div class="pills pills--compact">
+              {%- for sz in sizes -%}<label class="pill"><input type="radio" value="{{ sz | strip | escape }}"{% if forloop.index == 2 %} checked{% endif %}>{{ sz | strip }}</label>{%- endfor -%}
+            </div>
+          </div>
+        </template>
+      </div>
+
+      <div class="cz__step">
+        <p class="cz__step-title"><span class="badge">4</span>{{ 'customize.position' | t }}</p>
+        <label class="field"><span class="field__label">{{ 'customize.scale' | t }}</span><input class="cz__range" type="range" min="14" max="70" value="42" data-cz-scale></label>
+        <div class="cz__row">
+          <button class="btn btn--ghost btn--sm" type="button" data-cz-reset>{% render 'icon', name: 'rotate', px: 14 %}{{ 'customize.reset' | t }}</button>
+          <button class="btn btn--ghost btn--sm" type="button" data-cz-center>{% render 'icon', name: 'move', px: 14 %}{{ 'customize.center' | t }}</button>
+        </div>
+      </div>
+
+      <div class="cz__step">
+        <p class="cz__step-title"><span class="badge">5</span>{{ 'customize.notes' | t }}</p>
+        <textarea class="textarea" name="properties[Notes]" rows="3" placeholder="{{ 'customize.notes_placeholder' | t }}" data-cz-notes></textarea>
+      </div>
+
+      <div class="cz__total">
+        <div>
+          <small>{{ 'customize.total' | t }}</small>
+          <strong data-cz-total>{{ current.price | money }}</strong>
+          <span class="cz__breakdown muted" data-cz-breakdown></span>
+        </div>
+        <div class="pdp__stock" data-stock><span class="dot"></span><span data-cz-eta>{{ 'customize.step_4' | t }}</span></div>
+      </div>
+      <button class="btn btn--primary btn--lg btn--block" type="submit" data-atc data-cz-submit><span data-atc-text>{{ 'customize.add' | t }}</span><span class="pdp__atc-price" data-atc-price>{{ current.price | money }}</span></button>
+      <p class="form-error" data-cz-submit-error hidden></p>
+
+      <div class="cz__contact glass glass--clear">
+        <div><strong>{{ 'customize.contact' | t }}</strong><small class="muted">{{ 'customize.contact_body' | t }}</small></div>
+        {%- if wa != blank -%}
+          <a class="btn btn--glass btn--sm" href="https://wa.me/{{ wa }}?text={{ 'customize.whatsapp_prefill' | t | url_encode }}" target="_blank" rel="noopener" data-cz-wa>{% render 'icon', name: 'whatsapp', px: 16 %}{{ 'general.whatsapp' | t }}</a>
+        {%- else -%}
+          <a class="btn btn--glass btn--sm" href="{{ pages['contact'].url | default: routes.root_url }}">{% render 'icon', name: 'message', px: 16 %}{{ 'contact.title' | t }}</a>
+        {%- endif -%}
+      </div>
+    {%- endform -%}
+  </div>
+
+  <div class="cz__steps">
+    <div class="prop glass" data-reveal><span class="prop__icon">{% render 'icon', name: 'upload', px: 20 %}</span><strong>{{ 'customize.step_1' | t }}</strong></div>
+    <div class="prop glass" data-reveal style="--i:1"><span class="prop__icon">{% render 'icon', name: 'palette', px: 20 %}</span><strong>{{ 'customize.step_2' | t }}</strong></div>
+    <div class="prop glass" data-reveal style="--i:2"><span class="prop__icon">{% render 'icon', name: 'move', px: 20 %}</span><strong>{{ 'customize.step_3' | t }}</strong></div>
+    <div class="prop glass" data-reveal style="--i:3"><span class="prop__icon">{% render 'icon', name: 'needle', px: 20 %}</span><strong>{{ 'customize.step_4' | t }}</strong></div>
+  </div>
+
+  <script type="application/json" data-variants>{{ p.variants | json }}</script>
+  <script type="application/json" data-product-json>{"id":{{ p.id }},"handle":{{ p.handle | json }},"title":{{ p.title | json }},"url":{{ p.url | json }},"price":{{ current.price }},"strings":{"needDesign":{{ 'customize.need_design' | t | json }},"fileTooBig":{{ 'customize.file_too_big' | t | json }},"fileType":{{ 'customize.file_type' | t | json }},"minEmbroidery":{{ 'customize.min_embroidery' | t: count: min_emb | json }},"piece":{{ 'customize.piece' | t: n: '[n]' | json }},"perPiece":{{ 'customize.per_piece' | t: price: '[price]' | json }},"piecesTotal":{{ 'customize.pieces_total' | t: count: '[count]', total: '[total]' | json }},"etaPrint":{{ 'customize.eta_print' | t | json }},"etaEmbroidery":{{ 'customize.step_4' | t | json }},"wa":{{ 'customize.whatsapp_prefill' | t | json }}},"methodOption":{{ s.method_option | default: 'Type' | json }},"methodValues":{"Print":{{ s.method_print_value | default: 'Print' | json }},"Embroidery":{{ s.method_embroidery_value | default: 'Embroidery' | json }}}}</script>
+</section>
+{% schema %}
+{
+  "name": "Customize studio",
+  "settings": [
+    { "type": "product", "id": "product", "label": "Customize product (its variants carry the price; a 'Type' option with Print/Embroidery values switches price)" },
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow (blank = translated)" },
+    { "type": "text", "id": "heading", "label": "Heading (blank = translated)" },
+    { "type": "textarea", "id": "subheading", "label": "Subheading (blank = translated)" },
+    { "type": "text", "id": "colors", "label": "Garment colours (Name:#hex, comma-separated)", "default": "Forest:#043020,Black:#111111,Cream:#f4e8d8,Beige:#e6d5b8,White:#f7f7f5,Olive:#4b5d3a" },
+    { "type": "text", "id": "sizes", "label": "Sizes offered (comma-separated)", "default": "S,M,L,XL,2XL" },
+    { "type": "range", "id": "min_embroidery", "label": "Minimum pieces for embroidery", "min": 1, "max": 50, "step": 1, "default": 10 },
+    { "type": "range", "id": "max_qty", "label": "Maximum pieces per order", "min": 10, "max": 200, "step": 10, "default": 50 },
+    { "type": "header", "content": "Variant mapping" },
+    { "type": "text", "id": "method_option", "label": "Option name that holds the method", "default": "Type" },
+    { "type": "text", "id": "method_print_value", "label": "Option value for print", "default": "Print" },
+    { "type": "text", "id": "method_embroidery_value", "label": "Option value for embroidery", "default": "Embroidery" }
+  ]
+}
+{% endschema %}
