@@ -117,7 +117,10 @@ engine.registerTag('form', {
     const attrs = {};
     for (const [k, v] of Object.entries(this.attrs)) attrs[k] = yield this.liquid.evalValue(v, ctx);
     const builder = FORM_ACTIONS[type] || (() => ['/', 'post', null, '']);
-    const [action, method, enctype, hidden] = builder();
+    let [action, method, enctype, hidden] = builder();
+    // Shopify emits locale-aware action URLs (/ar/account/login …)
+    const prefix = ctx.get(['routes', 'root_url']);
+    if (prefix && prefix !== '/') action = prefix.replace(/\/$/, '') + action;
     const attrStr = Object.entries(attrs).map(([k, v]) => ` ${k}="${String(v ?? '').replace(/"/g, '&quot;')}"`).join('');
     emitter.write(`<form action="${action}" method="${method}"${enctype ? ` enctype="${enctype}"` : ''}${attrStr} accept-charset="UTF-8">${hidden}`);
     ctx.push({ form: store.formObject(type, ctx.environments.request) });

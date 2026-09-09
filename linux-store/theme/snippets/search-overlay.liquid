@@ -9,9 +9,12 @@
     <div class="search-overlay__results" data-search-results aria-live="polite">
       <div class="search-suggestions">
         <span class="search-group__title" style="width:100%">{{ 'search.popular' | t }}</span>
+        {%- comment -%} Chips show the localized label; the search itself runs on the catalog (English) term. {%- endcomment -%}
         {%- assign suggestions = settings.search_suggestions | default: 'Hoodie,Anime,Customize,Sada,Shirt' | split: ',' -%}
+        {%- assign labels = 'search.popular_terms' | t | split: ',' -%}
         {%- for term in suggestions -%}
-          <button class="chip" type="button" data-search-suggest="{{ term | strip }}">{{ term | strip }}</button>
+          {%- assign label = labels[forloop.index0] | default: term -%}
+          <button class="chip" type="button" data-search-suggest="{{ term | strip }}">{{ label | strip }}</button>
         {%- endfor -%}
       </div>
     </div>

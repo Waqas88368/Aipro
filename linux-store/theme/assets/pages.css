@@ -109,7 +109,8 @@
 .cz__file img { width: 48px; height: 48px; object-fit: contain; border-radius: 10px; background: rgb(255 255 255 / .08); }
 .cz__file strong { font-size: 14px; display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 200px; }
 .cz__file button { margin-inline-start: auto; }
-.cz__garments { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 10px; }
+.cz__garments { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+@media (min-width: 1000px) { .cz__garments { grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); } }
 .cz__garment-opt { display: grid; gap: 6px; justify-items: center; padding: 12px; border-radius: var(--r-md); border: 1px solid var(--glass-stroke); background: var(--glass-fill); cursor: pointer; text-align: center; transition: all var(--t-fast); }
 .cz__garment-opt svg { width: 56px; height: 56px; }
 .cz__garment-opt strong { font-size: 13px; }

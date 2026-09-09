@@ -16,11 +16,23 @@
   const money = (v) => L.money(Math.round(Number(v) * 100));
   const thumb = (url) => (url && url.includes('cdn.shopify.com') ? url.replace(/(\.[a-z]+)(\?|$)/, '_400x$1$2') : url);
 
+  // Catalog titles are English; map common Arabic (and Franco) words so a
+  // shopper typing "هودي" still hits the hoodies. Tokens are replaced, not
+  // appended, because Shopify search requires every term to match.
+  const SYNONYMS = [
+    [/^(هودي|هوديز|هوديه|hodie|hoody)$/i, 'hoodie'], [/^(تيشيرت|تي|تشيرت|tshirt|t-shirt|تيشرت)$/i, 'shirt'],
+    [/^(كاب|طاقية)$/i, 'cap'], [/^(انمي|أنمي|انيمي)$/i, 'anime'], [/^(سادة|ساده)$/i, 'sada'],
+    [/^(ورد|ورود|فلاور)$/i, 'flower'], [/^(تخصيص|تصميمك|كستم|كاستم)$/i, 'customize'],
+    [/^(اسود|أسود)$/i, 'black'], [/^(ابيض|أبيض)$/i, 'white'], [/^بيج$/i, 'beige'], [/^(برجندي|خمري)$/i, 'burgundy'],
+    [/^(شيرت|قميص)$/i, 'shirt'],
+  ];
+  const translate = (q) => q.trim().split(/\s+/).map((w) => { const hit = SYNONYMS.find(([re]) => re.test(w)); return hit ? hit[1] : w; }).join(' ');
+
   async function search(q) {
     if (!q || q.trim().length < 2) { results.innerHTML = initial; return; }
     if (controller) controller.abort();
     controller = new AbortController();
-    const url = `${root}/search/suggest.json?q=${encodeURIComponent(q)}&resources[type]=product,collection,page,article&resources[limit]=8&resources[options][unavailable_products]=last&resources[options][fields]=title,product_type,variants.title,vendor,tag`;
+    const url = `${root}/search/suggest.json?q=${encodeURIComponent(translate(q))}&resources[type]=product,collection,page,article&resources[limit]=8&resources[options][unavailable_products]=last&resources[options][fields]=title,product_type,variants.title,vendor,tag`;
     try {
       const res = await fetch(url, { signal: controller.signal, headers: { Accept: 'application/json' } });
       const data = await res.json();
@@ -58,6 +70,8 @@
     const s = e.target.closest('[data-search-suggest]');
     if (s) { input.value = s.dataset.searchSuggest; input.focus(); search(input.value); }
   });
+  // Full results page gets the same term mapping
+  input.form && input.form.addEventListener('submit', () => { input.value = translate(input.value); });
   // "/" opens search anywhere
   document.addEventListener('keydown', (e) => {
     if (e.key === '/' && !/input|textarea|select/i.test(document.activeElement.tagName)) { e.preventDefault(); L.drawers && L.drawers.open('search'); }

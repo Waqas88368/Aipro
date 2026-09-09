@@ -10,10 +10,13 @@ const THEME = path.resolve(__dirname, '../theme');
 
 const locales = {};
 function loadLocale(code) {
-  if (locales[code]) return locales[code];
   const file = path.join(THEME, 'locales', code === 'en' ? 'en.default.json' : `${code}.json`);
-  locales[code] = fs.existsSync(file) ? JSON.parse(fs.readFileSync(file, 'utf8')) : {};
-  return locales[code];
+  // Re-read when the file changes so locale edits show up without a restart.
+  const mtime = fs.existsSync(file) ? fs.statSync(file).mtimeMs : 0;
+  if (locales[code] && locales[code].mtime === mtime) return locales[code].data;
+  const data = mtime ? JSON.parse(fs.readFileSync(file, 'utf8')) : {};
+  locales[code] = { mtime, data };
+  return data;
 }
 function lookup(obj, key) { return key.split('.').reduce((o, k) => (o && typeof o === 'object' ? o[k] : undefined), obj); }
 
@@ -115,7 +118,9 @@ export function registerFilters(engine, store) {
   // ---- Translation ----------------------------------------------------------
   F('t', function (key, ...args) {
     const h = hashArgs(args);
-    const locale = this.context.environments.__locale || 'en';
+    // Inside {% render %} the environments object is the snippet's own scope;
+    // the locale is passed as a global so it resolves everywhere.
+    const locale = this.context.get(['__locale']) || 'en';
     let val = lookup(loadLocale(locale), key);
     if (val === undefined) val = lookup(loadLocale('en'), key);
     if (val && typeof val === 'object') {
